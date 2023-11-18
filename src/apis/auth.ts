@@ -19,3 +19,19 @@ export const register = async (
   const { data } = await instance.post("/auth/register", registerDto);
   return data as RegisterResponse;
 };
+
+export type LoginDto = {
+  email: string;
+  password: string;
+};
+
+export type LoginResponse = {
+  access_token: string;
+  token_type: string;
+  expires_at: string;
+};
+
+export const login = async (loginDto: LoginDto): Promise<LoginResponse> => {
+  const { data } = await instance.post("/auth/login", loginDto);
+  return data as LoginResponse;
+};

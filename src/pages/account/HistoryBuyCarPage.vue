@@ -1,25 +1,8 @@
 <template>
   <div class="card card-compact w-full bg-base-100 shadow-xl card-bordered">
     <div class="card-body">
-      <h2 class="card-title">Thông tin cá nhân</h2>
-      <Form @submit="updateProfile" :validation-schema="schema">
-        <div class="form-control w-full mb-2">
-          <label class="label">
-            <span class="label-text">Họ tên</span>
-          </label>
-          <Field
-            type="text"
-            name="name"
-            placeholder="Họ tên" 
-            class="input input-bordered w-full" 
-            v-model="form.name"
-          />
-          <ErrorMessage name="name" class="label-text-alt text-red-500" />
-        </div>
-        <div class="form-control w-full mt-3 text-center">
-          <button class="btn btn-primary">Cập nhật</button>
-        </div>
-      </Form>
+      <h2 class="card-title">Lịch sử mua xe</h2>
+      
     </div>
   </div>
 </template>
@@ -30,7 +13,7 @@ import { useRouter } from 'vue-router';
 import { object, string } from 'yup';
 
 export default {
-  name: 'ProfilePage',
+  name: 'HistoryBuyCarPage',
   components: {
     Form: Form,
     Field: Field,

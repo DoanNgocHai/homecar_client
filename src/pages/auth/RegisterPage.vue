@@ -52,6 +52,7 @@
 import { Form, Field, ErrorMessage } from 'vee-validate';
 import { object, string } from "yup";
 import { register } from '../../apis/auth'
+import { useRouter } from 'vue-router';
 
 export default {
   name: 'RegisterPage',
@@ -61,6 +62,8 @@ export default {
     ErrorMessage: ErrorMessage,
   },
   setup() {
+    const router = useRouter();
+
     const schema = object().shape({
       name: string()
         .required('Họ tên chưa được nhập'),
@@ -71,8 +74,10 @@ export default {
         .required('Mật khẩu chưa được nhập')
         .min(8, 'Mật khẩu tối thiểu 8 ký tự')
         .max(32, 'Mật khẩu tối đa 32 ký tự')
-    })
+    });
+
     return {
+      router,
       schema
     }
   },
@@ -89,7 +94,9 @@ export default {
     async onSubmit() {
       const { name, email, password } = this.form;
       const data = await register({ name, email, password });
-      console.log(data)
+      if (data) {
+        this.router.push('/auth/login');
+      }
     }
   }
 }
