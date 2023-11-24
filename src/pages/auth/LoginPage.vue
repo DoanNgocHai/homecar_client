@@ -39,6 +39,9 @@ import { useRouter } from 'vue-router';
 import { object, string } from "yup";
 import { login } from '../../apis/auth';
 import { setToken } from '../../utils/token';
+import { useToast } from "vue-toastification";
+import { useStore } from 'vuex';
+import { mapGetters } from "vuex";
 
 export default {
   name: 'LoginPage',
@@ -50,15 +53,18 @@ export default {
 
   setup() {
     const router = useRouter();
-
+    const toast = useToast();
     const schema = object().shape({
       email: string().required('Email chưa được nhập').email('Chưa đúng định dạng email'),
       password: string().required('Mật khẩu chưa được nhập')
-    })
+    });
+    const store = useStore();
 
     return {
       router,
       schema,
+      toast,
+      store
     }
   },
 
@@ -73,17 +79,28 @@ export default {
   methods: {
     async onSubmit() {
       const { email, password } = this.form;
-      const data = await login({ email, password });
-      console.log(data)
-      if (data) {
-        // save token
-        setToken(data.access_token);
 
-        // redirect to home page
-        this.router.push('/')
+      try {
+        const data = await login({ email, password });
+        
+        if (data) {
+          setToken(data.access_token);
+          // Chuyển hướng về trang chủ
+          this.store.dispatch('userAction', data);
+          // this.router.push('/');
+          this.toast.success("Đăng nhập thành công");
+          console.log(data);
+          
+        }
+      } catch (error) {
+        // Hiển thị thông báo lỗi cho người dùng (nếu cần)
+        this.toast.error("Đăng nhập thất bại, vui lòng kiểm tra lại thông tin đăng nhập.");
       }
     }
-  }
+  },
+  computed: {
+    ...mapGetters(['user']),
+  },
 }
 </script>
 
