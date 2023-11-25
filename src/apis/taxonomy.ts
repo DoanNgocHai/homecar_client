@@ -87,15 +87,12 @@ export type Colors = {
   name: string;
 };
 
-export type ColorsResponse = {
-  data: Colors[];
-};
 
-export const getColors = async (): Promise<ColorsResponse> => {
+export const getColors = async (): Promise<any> => {
   try {
     const response = await instance.get('/taxonomy/colors');
     const data: Colors[] = response.data;
-    return { data };
+    return data ;
   } catch (error) {
     // Xử lý lỗi một cách thích hợp
     throw new Error(`Không thể lấy dữ liệu`);

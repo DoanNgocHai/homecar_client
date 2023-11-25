@@ -28,7 +28,7 @@
       <ErrorMessage name="password" class="label-text-alt text-red-500" />
     </div>
     <div class="form-control w-full max-w-xs mt-3">
-      <button type="submit" class="btn btn-primary">Đăng nhập</button>
+      <v-btn :loading="loading" type="submit" class="btn btn-primary">Đăng nhập</v-btn>
     </div>
   </Form>
 </template>
@@ -73,20 +73,21 @@ export default {
         email: '',
         password: ''
       },
+      loading: false,
+
     }
   },
   methods: {
     async onSubmit() {
+      this.loading = true;
       const { email, password } = this.form;
-
       try {
         const data = await login({ email, password });
-        
         if (data) {
           setToken(data.access_token);
           // Chuyển hướng về trang chủ
           this.store.dispatch('userAction', data);
-          // this.router.push('/');
+          this.router.push('/');
           this.toast.success("Đăng nhập thành công");
           console.log(data);
           
@@ -95,6 +96,7 @@ export default {
         // Hiển thị thông báo lỗi cho người dùng (nếu cần)
         this.toast.error("Đăng nhập thất bại, vui lòng kiểm tra lại thông tin đăng nhập.");
       }
+      this.loading = false;
     }
   },
   computed: {

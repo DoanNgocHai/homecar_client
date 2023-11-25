@@ -132,24 +132,6 @@
         </form>
       </div>
     </div>
-      <div class="product-card">
-    <img alt="Product image" class="product-image">
-    <div class="product-info">
-      <h2 class="product-name">product.name </h2>
-      <div class="product-price">
-        <span class="price">product.price</span>
-        <span class="monthly-payment">Chỉ từ produc</span>
-      </div>
-      <div class="product-status">product.status </div>
-      <div class="product-features">
-        <span class="feature">feature</span>
-      </div>
-      <div class="product-id">
-        <span class="product-id">product.id </span>
-        <button class="compare-button">So sánh</button>
-      </div>
-    </div>
-  </div>
   </div>
 </template>
 
@@ -173,7 +155,6 @@ import {
   getGears,
 
   Colors,
-  ColorsResponse,
   getColors,
 
 } from '../../apis/taxonomy';
@@ -244,9 +225,9 @@ export default defineComponent({
     },
     async fetchColors() {
       try {
-        const response: ColorsResponse = await getColors();
-        console.log(response.data.data);
-        this.colors = response.data.data;
+        const response = await getColors();
+        console.log(response.data);
+        this.colors = response.data;
       } catch (error) {
         console.error('Error fetching brands:', error);
       }
@@ -301,5 +282,70 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.product-card {
+  width: 360px;
+  height: 420px;
+  border-radius: 10px;
+  background-color: #fff;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.1);
+}
+
+.product-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.product-info {
+  padding: 20px;
+}
+
+.product-name {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.product-price {
+  display: flex;
+  justify-content: space-between;
+}
+
+.price {
+  font-size: 16px;
+}
+
+.monthly-payment {
+  font-size: 14px;
+}
+
+.product-status {
+  font-size: 14px;
+}
+
+.product-features {
+  margin-top: 10px;
+}
+
+.feature {
+  font-size: 14px;
+}
+
+.product-id {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.product-id .product-id {
+  font-size: 16px;
+}
+
+.product-id button {
+  font-size: 14px;
+  background-color: #0080FF;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+}
 </style>
-../../apis/CarTaxonomy
