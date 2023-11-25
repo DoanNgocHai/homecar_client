@@ -36,3 +36,8 @@ export const userSaleCar = async (
   const { data } = await instance.post("/user/cars", createCarDto, headers);
   return data as CreateCarResponse;
 };
+
+export const listCar = async (): Promise<any> => {
+  const { data } = await instance.get("/user/cars", headers);
+  return data;
+};

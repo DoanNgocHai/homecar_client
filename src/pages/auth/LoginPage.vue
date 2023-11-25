@@ -40,8 +40,7 @@ import { object, string } from "yup";
 import { login } from '../../apis/auth';
 import { setToken } from '../../utils/token';
 import { useToast } from "vue-toastification";
-import { useStore } from 'vuex';
-import { mapGetters } from "vuex";
+import { useStore,mapGetters } from 'vuex';
 
 export default {
   name: 'LoginPage',

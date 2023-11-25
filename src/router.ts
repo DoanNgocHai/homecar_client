@@ -15,6 +15,8 @@ import AdminUserPage from "./pages/account/admin/AdminUserPage.vue";
 import AdminCarPage from "./pages/account/admin/AdminCarPage.vue";
 import AdminReportPage from "./pages/account/admin/AdminReportPage.vue";
 
+import ListCar from "./components/home/ListCar.vue";
+
 import SaleCar from "./pages/sale_car/SaleCar.vue";
 
 
@@ -27,6 +29,7 @@ const routes: RouteRecordRaw[] = [
       { path: "register", component: RegisterPage },
     ],
   },
+  { path: "/list-car", component: ListCar },
   {
     path: "/account",
     component: AccountLayout,
