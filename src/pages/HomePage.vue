@@ -5,6 +5,7 @@
       <BuyCar />
       <SaleCar />
     </div>
+    <ListCar />
   </div>
 </template>
 
@@ -12,4 +13,6 @@
 import BuyCar from '../components/home/BuyCar.vue';
 import Carousel from '../components/home/Carousel.vue'
 import SaleCar from '../components/home/SaleCar.vue';
+import ListCar from '../components/home/ListCar.vue';
+
 </script>
