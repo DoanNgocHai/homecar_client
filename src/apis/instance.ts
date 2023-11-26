@@ -9,6 +9,13 @@ export const instance = axios.create({
   },
 });
 
+export const instanceUpload = axios.create({
+  baseURL: import.meta.env.VITE_API_URL,
+  headers: {
+    'content-type': 'multipart/form-data'
+  },
+});
+
 export const getHeader = (): AxiosRequestConfig => {
   let token = window.localStorage.getItem(AUTHENTICATED_KEY);
 

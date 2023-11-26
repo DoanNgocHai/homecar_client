@@ -126,6 +126,39 @@
               ></v-text-field>
             </div>  
           </div>
+          <v-file-input
+            @change="onFileChange"
+            v-model="form.thumbnail"
+            color="deep-purple-accent-4"
+            counter
+            label="File input"
+            multiple
+            placeholder="Select your files"
+            prepend-icon="mdi-camera"
+            variant="outlined"
+            :show-size="1000"
+          >
+            <template v-slot:selection="{ fileNames }">
+              <template v-for="(fileName, index) in fileNames" :key="fileName">
+                <v-chip
+                  v-if="index < 2"
+                  color="deep-purple-accent-4"
+                  label
+                  size="small"
+                  class="me-2"
+                >
+                  {{ fileName }}
+                </v-chip>
+
+                <span
+                  v-else-if="index === 2"
+                  class="text-overline text-grey-darken-3 mx-2"
+                >
+                  + file_name.length - 2  File(s)
+                </span>
+              </template>
+            </template>
+          </v-file-input>
           <div class="form-control w-full mt-2">
             <button @click.prevent="submitInfo" class="btn">Gửi thông tin</button>
           </div>
@@ -137,6 +170,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { uploadFile } from '../../apis/common/upload-file'
 import { userSaleCar, CreateCarDto } from '../../apis/user/car'
 import { useRouter } from 'vue-router';
 import { useToast } from "vue-toastification";
@@ -196,9 +230,11 @@ export default defineComponent({
         selectedColor: null as string | null,
         odo: '',
         price: '',
-        description:''
+        description: '',
+        thumbnail: [],
       },
-      
+      selectedFile: [],
+      images:[],
     };
 
   },
@@ -207,8 +243,6 @@ export default defineComponent({
     async fetchBrands() {
       try {
         const response: BrandsResponse = await getBrands();
-        console.log(response.data.data);
-        
         this.brands = response.data.data;
       } catch (error) {
         console.error('Error fetching brands:', error);
@@ -217,7 +251,6 @@ export default defineComponent({
     async fetchFigures() {
       try {
         const response: FiguresResponse = await getFigures();
-        console.log(response.data.data);
         this.figures = response.data.data;
       } catch (error) {
         console.error('Error fetching brands:', error);
@@ -226,7 +259,6 @@ export default defineComponent({
     async fetchColors() {
       try {
         const response = await getColors();
-        console.log(response.data);
         this.colors = response.data;
       } catch (error) {
         console.error('Error fetching brands:', error);
@@ -235,14 +267,24 @@ export default defineComponent({
     async fetchGears() {
       try {
         const response: GearsResponse = await getGears();
-        console.log(response.data.data);
         this.gears = response.data.data;
       } catch (error) {
         console.error('Error fetching brands:', error);
       }
     },
+    onFileChange(file:any) {
+      if (!file) {
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.form.thumbnail = file;
+      };
+    },
     async submitInfo() {
-      const { title, selectedBrand, selectedFigure, selectedYear, selectedGear, selectedColor, odo, price, description } = this.form;
+      let param = { "image": this.form.thumbnail[0] };
+      const data = await uploadFile(param);
+      const { title, selectedBrand, selectedFigure, selectedYear, selectedGear, selectedColor, odo, price, description, thumbnail } = this.form;
       
       const createCarDto: CreateCarDto = {
         title,
@@ -254,10 +296,13 @@ export default defineComponent({
         color_id: selectedColor || '',
         price: +price,
         description,
+        thumbnail: data.path
       };
+      console.log(createCarDto);
 
       try {
         const data = await userSaleCar(createCarDto);
+
         if (data) {
           // this.router.push('/account/history-sale-car');
           this.toast.success("Thêm mới xe thành công, vui lòng đợi xét duyệt!!");

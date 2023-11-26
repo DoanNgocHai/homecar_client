@@ -85,7 +85,7 @@
                           size="small"
                         ></v-icon>
                       </span>
-                      <span>Số sàn {{ item.gear_id }} cấp</span>
+                      <span>{{ item.gear.name }}</span>
                     </div>
                     </v-col>
                     <v-col style="padding-bottom: 0px; padding-top: 5px;">
@@ -134,6 +134,7 @@
         </v-card>
         </v-col>
       </v-row>
+      <v-btn v-if="isLastPage" @click="loadMore">xem thêm</v-btn>
     </div>
 </template>
 
@@ -144,7 +145,9 @@ export default {
     return {
       loading: false,
       selection: 1,
-      data: [{}],
+      data: [],
+      perPage: 1,
+      isLastPage: false
     };
   },
   created(){
@@ -155,7 +158,19 @@ export default {
       const data = await listCar();
       if (data) {
         this.data = data?.data;
-        console.log(this.data);
+        this.isLastPage = this.perPage < data.last_page;
+        console.log( data?.data.price);
+      }
+    },
+    async loadMore() {
+      this.perPage++;
+      const data = await listCar(this.perPage);
+      if (data && this.isLastPage) {
+        this.isLastPage = this.perPage < data.last_page;
+        data?.data.forEach((item:any) => {
+          this.data.push(item);
+        });
+        console.log( data?.data);
       }
     },
     reserve () {
