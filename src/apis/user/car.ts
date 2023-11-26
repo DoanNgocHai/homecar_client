@@ -46,3 +46,9 @@ export const listCar = async (page: number = 1): Promise<any> => {
   const { data } = await instance.get("/user/cars", headers);
   return data;
 };
+
+export const getCarInfo = async (carId: any): Promise<any> => {
+  console.log("ksksks: ", carId );
+  const { data } = await instance.get("/user/cars/" + carId, headers);
+  return data;
+};

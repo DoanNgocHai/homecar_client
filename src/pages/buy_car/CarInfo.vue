@@ -1,10 +1,19 @@
 <template>
-    <div>
-      <v-row class="px-40">
-        <v-col class="py" cols="4" v-for="(item, index) in data" :key="index">
+    <div class="mt-16">
+      <v-row>
+        <v-col cols="8">
+          <v-card class="ml-5">
+            <v-img
+              cover
+              height="500"
+              src="https://cdn.vuetifyjs.com/images/cards/cooking.png"
+            ></v-img>
+          </v-card>
+        </v-col>
+        <v-col >
           <v-card
           :loading="loading"
-          max-width="374"
+          max-width="470"
         >
           <template v-slot:loader="{ isActive }">
             <v-progress-linear
@@ -14,34 +23,48 @@
               indeterminate
             ></v-progress-linear>
           </template>
-          <a @click="getCarInfo(item?.id)">
-          <v-img
-            cover
-            height="250"
-            src="https://cdn.vuetifyjs.com/images/cards/cooking.png"
-          ></v-img>
 
           <v-card-item>
             <v-row>
               <v-col><v-btn size="small" class="button" color="#f5ec42">Chứng nhận Car</v-btn></v-col>
             </v-row>
-            
-            <v-card-title><h2 class="title-size">{{ item.price }} Triệu <span class="font-size">Chỉ từ 2.9 triệu/tháng</span></h2></v-card-title>
-
-            <div>
-              <v-row >
-                <v-col cols="10" class="container-content">
-                  <span class="content-style">{{ item.title }}</span>
-                </v-col>
-                <v-col cols="2">
-                  <span class="me-1">
+            <div class="container-content py-5">
+                  <span class="content-style">{{ data.title }}</span>
+            </div>
+            <p>Giá niêm yết:</p>
+            <v-card-title><h2 class="title-size">{{ data.price }} Triệu <span class="font-size">Chỉ từ 2.9 triệu/tháng</span></h2></v-card-title>
+            <div class="box-action">
+              <v-row class="justify-center">
+                <v-col class="px-0 text-center"> <!-- Thêm lớp text-center để căn giữa theo chiều ngang -->
+                  <span class="icon">
                     <v-icon
-                      color="#000000"
-                      icon="mdi-heart-outline"
-                      size="large"
+                      color="#081f4d"
+                      icon="mdi-heart"
+                      size="small"
                     ></v-icon>
                   </span>
-              </v-col>
+                  <span>Yêu thích</span>
+                </v-col>
+                <v-col class="text-center"> <!-- Thêm lớp text-center để căn giữa theo chiều ngang -->
+                  <span class="icon">
+                    <v-icon
+                      color="#081f4d"
+                      icon="mdi-heart"
+                      size="small"
+                    ></v-icon>
+                  </span>
+                  <span>So sánh</span>
+                </v-col>
+                <v-col class="text-center"> <!-- Thêm lớp text-center để căn giữa theo chiều ngang -->
+                  <span class="icon">
+                    <v-icon
+                      color="#081f4d"
+                      icon="mdi-heart"
+                      size="small"
+                    ></v-icon>
+                  </span>
+                  <span>Chia sẽ</span>
+                </v-col>
               </v-row>
             </div>
           </v-card-item>
@@ -59,7 +82,7 @@
                           size="small"
                         ></v-icon>
                       </span>
-                      <span>{{ item.odo }} km</span>
+                      <span>{{ data.odo }} km</span>
                     </div>
                     </v-col>
                     <v-col style="padding-bottom: 0px;">
@@ -85,7 +108,7 @@
                           size="small"
                         ></v-icon>
                       </span>
-                      <span>{{ item.gear.name }}</span>
+                      <span>Số sàn {{ data.gear_id }} cấp</span>
                     </div>
                     </v-col>
                     <v-col style="padding-bottom: 0px; padding-top: 5px;">
@@ -111,7 +134,7 @@
                           size="small"
                         ></v-icon>
                       </span>
-                      <span>{{ item.brand_id }}</span>
+                      <span>{{ data.brand_id }}</span>
                     </div>
                     </v-col>
                     <v-col style="padding-bottom: 0px; padding-top: 5px;">
@@ -123,63 +146,49 @@
                           size="small"
                         ></v-icon>
                       </span>
-                      <span>SX: {{ item.year }}</span>
+                      <span>SX: {{ data.year }}</span>
                     </div>
                     </v-col>
                   </v-row>
                 </div>
               </v-col>
             </v-row>
-          </a>
         </v-card>
         </v-col>
       </v-row>
-      <v-btn v-if="isLastPage" @click="loadMore">xem thêm</v-btn>
     </div>
 </template>
 
 <script lang="ts">
-import { listCar } from '../../apis/user/car';
+import { getCarInfo } from '../../apis/user/car.js';
 export default {
   data() {
     return {
       loading: false,
       selection: 1,
-      data: [],
-      perPage: 1,
-      isLastPage: false
+      currentId: '',
+      data: []
     };
+  },
+  mounted() {
+    console.log(this.$route.params.carId);
   },
   created(){
     this.getData();
+    
   },
   methods: {
     async getData() {
-      const data = await listCar();
+      const data = await getCarInfo(this.$route.params.carId);
       if (data) {
-        this.data = data?.data;
-        this.isLastPage = this.perPage < data.last_page;
-        console.log( data?.data.price);
-      }
-    },
-    async loadMore() {
-      this.perPage++;
-      const data = await listCar(this.perPage);
-      if (data && this.isLastPage) {
-        this.isLastPage = this.perPage < data.last_page;
-        data?.data.forEach((item:any) => {
-          this.data.push(item);
-        });
-        console.log( data?.data);
+        this.data = data;
+        console.log(this.data);
       }
     },
     reserve () {
       this.loading = true
 
       setTimeout(() => (this.loading = false), 2000)
-    },
-    getCarInfo(id:string) {
-      this.$router.push({ path: '/car-info/' + id });
     },
 
     convertNumtoPrice(number: any) {
@@ -200,22 +209,33 @@ export default {
 
 .title-size {
   font-weight: 700;
-  font-size: 22px;
   margin-bottom: 7px;
+  color: #1c2c5e;
+  font-family: Roboto Black,sans-serif;
+  font-size: 1.875rem;
+    line-height: 2.25rem;
 }
 
 .container-content {
   overflow: hidden;
   text-overflow: ellipsis;
+  border-top-style: dashed;
+  border-top-width: thin;
 }
 
 .content-style {
-  width: 10%;
-  font-weight: 400;
-  white-space: nowrap;
+  width: 100%;
   text-overflow: ellipsis;
   color: black !important;
   padding: 0px !important;
+  font-family: SFProDisplay-Bold,Arial,sans-serif!important;
+    font-weight: 600;
+    font-size: 1.5rem;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    display: -webkit-box;
+    overflow: hidden;
+    line-height: 2rem;
 }
 
 .button {
@@ -231,6 +251,17 @@ export default {
   height: 110px;
   padding: 10px 10px 20px 20px;
   color: #081f4d;
+}
+
+.box-action {
+  border-radius: 15px;
+  background-color: #f2f4fa;
+  height: 35px;
+  padding: 10px 10px 20px 20px;
+  color: #081f4d;
+}
+.box-action .v-row{
+
 }
 .icon {
   position: relative;

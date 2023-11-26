@@ -16,6 +16,7 @@ import AdminCarPage from "./pages/account/admin/AdminCarPage.vue";
 import AdminReportPage from "./pages/account/admin/AdminReportPage.vue";
 
 import ListCar from "./components/home/ListCar.vue";
+import CarInfo from "./pages/buy_car/CarInfo.vue";
 
 import SaleCar from "./pages/sale_car/SaleCar.vue";
 
@@ -30,6 +31,7 @@ const routes: RouteRecordRaw[] = [
     ],
   },
   { path: "/list-car", component: ListCar },
+  { path: '/car-info/:carId', name: "CarInfo", component: CarInfo},
   {
     path: "/account",
     component: AccountLayout,
