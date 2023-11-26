@@ -14,7 +14,7 @@
               indeterminate
             ></v-progress-linear>
           </template>
-          <a @click="getCarInfo(item?.id)">
+          <a href="#" >
           <v-img
             cover
             height="250"
@@ -159,7 +159,6 @@ export default {
       if (data) {
         this.data = data?.data;
         this.isLastPage = this.perPage < data.last_page;
-        console.log( data?.data.price);
       }
     },
     async loadMore() {
@@ -177,9 +176,6 @@ export default {
       this.loading = true
 
       setTimeout(() => (this.loading = false), 2000)
-    },
-    getCarInfo(id:string) {
-      this.$router.push({ path: '/car-info/' + id });
     },
 
     convertNumtoPrice(number: any) {
