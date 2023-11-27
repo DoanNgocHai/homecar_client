@@ -1,10 +1,10 @@
 <template>
     <div>
-      <v-row class="px-40">
+      <v-row class="px-8">
         <v-col class="py" cols="4" v-for="(item, index) in data" :key="index">
           <v-card
           :loading="loading"
-          max-width="374"
+          max-width="500"
         >
           <template v-slot:loader="{ isActive }">
             <v-progress-linear
@@ -14,7 +14,7 @@
               indeterminate
             ></v-progress-linear>
           </template>
-          <a href="#" >
+          <a @click="getCarInfo(item?.id)" >
           <v-img
             cover
             height="250"
@@ -177,7 +177,9 @@ export default {
 
       setTimeout(() => (this.loading = false), 2000)
     },
-
+    getCarInfo(id:string) {
+      this.$router.push({ path: '/car-info/' + id });
+    },
     convertNumtoPrice(number: any) {
       console.log(number?.slice(0, -6));
       return number?.slice(0, 2);
