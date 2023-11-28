@@ -105,6 +105,36 @@
           <div class="d-flex mb-1">
             <div class="form-control w-full mb-2 pr-5">
               <label class="label">
+                <span class="label-text">Số chỗ ngồi</span>
+              </label>
+              <v-select
+                v-model="form.selectedSeat"
+                :items="seats"
+                item-title="name"
+                item-value="id"
+                placeholder="Chọn số chỗ ngồi của xe"
+                variant="outlined"
+                clearable
+              ></v-select>
+            </div>
+            <div class="form-control w-full mb-2">
+              <label class="label">
+                <span class="label-text">Động cơ</span>
+              </label>
+              <v-select
+                v-model="form.selectedEngine"
+                :items="engines"
+                item-title="name"
+                item-value="id"
+                placeholder="Chọn động cơ xe"
+                variant="outlined"
+                clearable
+              ></v-select>
+            </div>  
+          </div>
+          <div class="d-flex mb-1">
+            <div class="form-control w-full mb-2 pr-5">
+              <label class="label">
                 <span class="label-text">Giá cả</span>
               </label>
               <v-text-field
@@ -206,21 +236,21 @@ export default defineComponent({
   data() {
     return {
       brands: [] as Brand[],
-      // selectedBrand: null as number | null,
 
       figures: [] as Figures[],
-      // selectedFigure: null as number | null,
 
       years: [
         '2009' , '2010' ,'2011' , '2012' ,'2013' , '2014' ,'2015' , '2016' , '2017' , '2018' ,'2019' , '2020' ,'2021' , '2022' ,'2023'
       ],
-      // selectedYear: null as string | null,
-      
+      seats: [
+        '4' , '5' ,'6' , '7' ,'8'
+      ],
+      engines:[
+        'Xăng' , 'Dầu' ,'Điện' , 'Hybrid' ,'Hydro'
+      ],
       gears: [] as Gears[],
-      // selectedGears: null as number | null,
 
       colors: [] as Colors[],
-      // selectedColor: null as number | null,
       form: {
         title:'',
         selectedBrand: null as string | null,
@@ -228,13 +258,15 @@ export default defineComponent({
         selectedYear: null as string | null,
         selectedGear: null as string | null,
         selectedColor: null as string | null,
+        selectedSeat: null as string | null,
+        selectedEngine: null as string | null,
         odo: '',
         price: '',
         description: '',
         thumbnail: [],
       },
-      selectedFile: [],
-      images:[],
+      // selectedFile: [],
+      // images:[],
     };
 
   },
@@ -284,7 +316,7 @@ export default defineComponent({
     async submitInfo() {
       let param = { "image": this.form.thumbnail[0] };
       const data = await uploadFile(param);
-      const { title, selectedBrand, selectedFigure, selectedYear, selectedGear, selectedColor, odo, price, description, thumbnail } = this.form;
+      const { title, selectedBrand, selectedFigure, selectedYear, odo, selectedGear, selectedColor, selectedSeat, selectedEngine, price, description, thumbnail} = this.form;
       
       const createCarDto: CreateCarDto = {
         title,
@@ -294,6 +326,8 @@ export default defineComponent({
         odo,
         gear_id: selectedGear || '',
         color_id: selectedColor || '',
+        seat: selectedSeat || '',
+        engine: selectedEngine || '',
         price: +price,
         description,
         thumbnail: data.path
@@ -309,7 +343,7 @@ export default defineComponent({
         }
       } catch (error) {
         // Xử lý lỗi một cách thích hợp, ví dụ in ra console
-        this.toast.success("Thêm mới xe thất bại!!");
+        this.toast.error("Thêm mới xe thất bại!!");
         console.error('Error submitting car info:', error);
       }
     },
