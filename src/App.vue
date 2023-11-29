@@ -1,7 +1,7 @@
 <template>
   <div>
     <Navbar />
-    <div class="container w-full mx-auto py-6">
+    <div class="container-main">
       <router-view></router-view>
     </div>
     <Footer />
@@ -11,12 +11,12 @@
 <script setup lang="ts">
 import Navbar from './components/Navbar.vue';
 import Footer from './components/Footer.vue';
-
 </script>
 
 <style scoped>
-.container {
+.container-main {
   min-height: 70vh;
+  padding: 6rem 0;
 }
 
 .logo {

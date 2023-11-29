@@ -1,25 +1,5 @@
-import { instance, getHeader } from './instance';
+import { instance } from './instance';
 
-const headers = getHeader();
-// export type Brand = {
-//   id: number;
-//   name: string;
-// };
-
-// export type BrandsResponse = {
-//   data: Brand[];
-// };
-
-// export const getBrands = async (): Promise<BrandsResponse> => {
-//   try {
-//     const response = await instance.get('/admin/brand', headers);
-//     const data: Brand[] = response.data;
-//     return { data };
-//   } catch (error) {
-//     // Xử lý lỗi một cách thích hợp
-//     throw new Error(`Không thể lấy dữ liệu thương hiệu`);
-//   }
-// };
 export type Brand = {
   id: number;
   name: string;
