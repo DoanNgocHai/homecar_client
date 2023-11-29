@@ -153,7 +153,6 @@
 
 <script lang="ts">
 import { listCar } from '../../apis/user/car';
-import shortNum from 'number-shortener';
 export default {
   data() {
     return {
@@ -167,7 +166,6 @@ export default {
   },
   setup() {
     return {
-      shortNum
     }
   },
   created(){
