@@ -53,6 +53,7 @@ import { Form, Field, ErrorMessage } from 'vee-validate';
 import { object, string } from "yup";
 import { register } from '../../apis/auth'
 import { useRouter } from 'vue-router';
+import { useToast } from "vue-toastification";
 
 export default {
   name: 'RegisterPage',
@@ -63,7 +64,7 @@ export default {
   },
   setup() {
     const router = useRouter();
-
+    const toast = useToast();
     const schema = object().shape({
       name: string()
         .required('Họ tên chưa được nhập'),
@@ -78,7 +79,8 @@ export default {
 
     return {
       router,
-      schema
+      schema,
+      toast,
     }
   },
   data() {
@@ -96,6 +98,8 @@ export default {
       const data = await register({ name, email, password });
       if (data) {
         this.router.push('/auth/login');
+        this.toast.success("Đăng ký thành công");
+
       }
     }
   }
