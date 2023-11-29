@@ -48,7 +48,7 @@
       </div>
       <span class="pr-2 cursor-pointer">
         <span class="text-sm block leading-[1rem]">Hotline CSKH</span>
-        <a v-bind:href="phoneNumberLink" class="font-bold text-tcSecondary text-lg leading-[1rem]">0396337628</a>
+        <a class="font-bold text-tcSecondary text-lg leading-[1rem]">0396337628</a>
       </span>
     </div>
 
@@ -68,9 +68,6 @@ export default {
     },
   },
   computed: {
-    phoneNumberLink() {
-      return "tel:" + this.phoneNumber;
-    }
   }
 };
 </script>

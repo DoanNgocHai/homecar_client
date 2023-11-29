@@ -1,18 +1,39 @@
 <template>
-  <div class="carousel w-full">
-    <div id="slide1" class="carousel-item relative w-full">
-      <img src="/images/b1.jpg" class="w-full" />
-      <div class="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
-        <a href="#slide4" class="btn btn-circle">❮</a>
-        <a href="#slide2" class="btn btn-circle">❯</a>
-      </div>
-    </div>
-    <div id="slide2" class="carousel-item relative w-full">
-      <img src="/images/b2.jpg" class="w-full" />
-      <div class="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
-        <a href="#slide1" class="btn btn-circle">❮</a>
-        <a href="#slide3" class="btn btn-circle">❯</a>
-      </div>
-    </div>
-  </div>
+  <v-carousel
+    cycle
+    height="800"
+    hide-delimiter-background
+    show-arrows="hover"
+    hide-delimiters
+  >
+    <v-carousel-item 
+    cover
+      v-for="(slide, i) in slides"
+      :key="i"
+      :src="slide.src"
+    >
+    </v-carousel-item>
+  </v-carousel>
 </template>
+<script>
+  export default {
+    data () {
+      return {
+        slides: [
+          {
+            src: 'https://cdn.vuetifyjs.com/images/carousel/squirrel.jpg',
+          },
+          {
+            src: 'https://cdn.vuetifyjs.com/images/carousel/sky.jpg',
+          },
+          {
+            src: 'https://cdn.vuetifyjs.com/images/carousel/bird.jpg',
+          },
+          {
+            src: 'https://cdn.vuetifyjs.com/images/carousel/planet.jpg',
+          },
+        ],
+      }
+    },
+  }
+</script>

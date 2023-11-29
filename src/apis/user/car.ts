@@ -10,6 +10,8 @@ export type CreateCarDto = {
   odo: string;
   gear_id: string;
   color_id: string;
+  seat: string;
+  engine: string;
   price: number;
   description: string;
   thumbnail: string;
@@ -24,6 +26,8 @@ export type CreateCarResponse = {
     odo: string;
     gear_id: string;
     color_id: string;
+    seat: string;
+    engine: string;
     price: number;
     description: string;
     user_id: string;

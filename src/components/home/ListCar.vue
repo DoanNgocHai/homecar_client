@@ -16,17 +16,29 @@
           </template>
           <a @click="getCarInfo(item?.id)" >
           <v-img
+            v-if="!item.thumbnail"
+            src="../../../public/images/logoCar.png"
             cover
             height="250"
-            src="https://cdn.vuetifyjs.com/images/cards/cooking.png"
           ></v-img>
-
+          <v-img
+            cover
+            height="250"
+            v-else :src="path + item.thumbnail"
+          ></v-img>
           <v-card-item>
             <v-row>
               <v-col><v-btn size="small" class="button" color="#f5ec42">Chứng nhận Car</v-btn></v-col>
+              <v-col class="d-flex justify-end">
+                <img
+                  class="icon-score"
+                  src="../../../public/images/logo_icon.png"
+                />
+                <span class="score">80/100</span>
+              </v-col>
             </v-row>
             
-            <v-card-title><h2 class="title-size">{{ item.price }} Triệu <span class="font-size">Chỉ từ 2.9 triệu/tháng</span></h2></v-card-title>
+            <v-card-title><h2 class="title-size">{{formatNumber(item.price)}} <span class="font-size">Chỉ từ 2.9 triệu/tháng</span></h2></v-card-title>
 
             <div>
               <v-row >
@@ -50,7 +62,7 @@
               <v-col cols="12">
                 <div class="box">
                   <v-row>
-                    <v-col style="padding-bottom: 0px;">
+                    <v-col style="padding-bottom: 5px;">
                       <div class="odo">
                       <span class="icon">
                         <v-icon
@@ -62,21 +74,22 @@
                       <span>{{ item.odo }} km</span>
                     </div>
                     </v-col>
-                    <v-col style="padding-bottom: 0px;">
+                    <v-col style="padding-bottom: 5px;">
                       <div class="odo">
-                      <span class="icon">
-                        <v-icon
-                          color="#081f4d"
-                          icon="mdi-car-back"
-                          size="small"
-                        ></v-icon>
-                      </span>
-                      <span>5 chỗ</span>
-                    </div>
+                        <span class="icon">
+                          <v-icon
+                            color="#081f4d"
+                            icon="mdi-car-brake-abs"
+                            size="small"
+                          ></v-icon>
+                        </span>
+                        <span>{{ item.brand.name }}</span>
+                      </div>
+                      
                     </v-col>
                   </v-row>
                   <v-row>
-                    <v-col style="padding-bottom: 0px; padding-top: 5px;">
+                    <v-col style="padding-bottom: 5px; padding-top: 5px;">
                       <div class="odo">
                       <span class="icon">
                         <v-icon
@@ -88,7 +101,7 @@
                       <span>{{ item.gear.name }}</span>
                     </div>
                     </v-col>
-                    <v-col style="padding-bottom: 0px; padding-top: 5px;">
+                    <v-col style="padding-bottom: 5px; padding-top: 5px;">
                       <div class="odo">
                       <span class="icon">
                         <v-icon
@@ -97,33 +110,33 @@
                           size="small"
                         ></v-icon>
                       </span>
-                      <span>36.399 km</span>
+                      <span>Xe {{ item.engine }}</span>
                     </div>
                     </v-col>
                   </v-row>
                   <v-row>
-                    <v-col style="padding-bottom: 0px; padding-top: 5px;">
+                    <v-col style="padding-bottom: 5px; padding-top: 5px;">
                       <div class="odo">
-                      <span class="icon">
-                        <v-icon
-                          color="#081f4d"
-                          icon="mdi-card-account-details-outline"
-                          size="small"
-                        ></v-icon>
-                      </span>
-                      <span>{{ item.brand_id }}</span>
-                    </div>
+                        <span class="icon">
+                          <v-icon
+                            color="#081f4d"
+                            icon="mdi-car-back"
+                            size="small"
+                          ></v-icon>
+                        </span>
+                        <span>{{ item.seat }} chỗ</span>
+                      </div>
                     </v-col>
-                    <v-col style="padding-bottom: 0px; padding-top: 5px;">
+                    <v-col style="padding-bottom: 5px; padding-top: 5px;">
                       <div class="odo">
                       <span class="icon">
                         <v-icon
                           color="#081f4d"
-                          icon="mdi-map-marker"
+                          icon="mdi-alpha-y-box-outline"
                           size="small"
                         ></v-icon>
                       </span>
-                      <span>SX: {{ item.year }}</span>
+                      <span>Năm {{ item.year }}</span>
                     </div>
                     </v-col>
                   </v-row>
@@ -140,15 +153,22 @@
 
 <script lang="ts">
 import { listCar } from '../../apis/user/car';
+import shortNum from 'number-shortener';
 export default {
   data() {
     return {
+      path: "http://127.0.0.1:8000",
       loading: false,
       selection: 1,
       data: [],
       perPage: 1,
-      isLastPage: false
+      isLastPage: false,
     };
+  },
+  setup() {
+    return {
+      shortNum
+    }
   },
   created(){
     this.getData();
@@ -157,8 +177,8 @@ export default {
     async getData() {
       const data = await listCar();
       if (data) {
-        this.data = data?.data;
         this.isLastPage = this.perPage < data.last_page;
+        this.data = data?.data;
       }
     },
     async loadMore() {
@@ -169,7 +189,6 @@ export default {
         data?.data.forEach((item:any) => {
           this.data.push(item);
         });
-        console.log( data?.data);
       }
     },
     reserve () {
@@ -180,10 +199,19 @@ export default {
     getCarInfo(id:string) {
       this.$router.push({ path: '/car-info/' + id });
     },
-    convertNumtoPrice(number: any) {
-      console.log(number?.slice(0, -6));
-      return number?.slice(0, 2);
-    }
+    formatNumber(number:any) {
+      if (number >= 1000000 && number < 1000000000) {
+        const millions = (number / 1000000).toFixed(0);
+        return `${millions}~ Triệu`;
+      }
+      else if (number >= 1000000000) {
+        const billions = (number / 1000000000 * 10) / 10;
+        return `${billions}~ Tỉ`;
+      } 
+      else {
+        return number.toString();
+      }
+    },
   }
 }
 </script>
@@ -197,8 +225,9 @@ export default {
 }
 
 .title-size {
+  color: #1c2c5e;
   font-weight: 700;
-  font-size: 22px;
+  font-size: 30px;
   margin-bottom: 7px;
 }
 
@@ -209,10 +238,12 @@ export default {
 
 .content-style {
   width: 10%;
-  font-weight: 400;
+  font-size: 25px;
+  font-weight: 500;
+  letter-spacing: 2px;
   white-space: nowrap;
   text-overflow: ellipsis;
-  color: black !important;
+  color: #1c2c5e !important;
   padding: 0px !important;
 }
 
@@ -239,5 +270,15 @@ export default {
 .card {
   padding-bottom: 30px;
 }
-
+.icon-score{
+  width: 43px;
+  height: 33px;
+  padding-right: 10px;
+}
+.score{
+  position: relative;
+  top: 6px;
+  color: #1c2c5e;
+  font-weight: 600;
+}
 </style>
