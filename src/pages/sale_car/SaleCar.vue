@@ -10,10 +10,13 @@
       <p class="font-weight-bold text-center text-h5">
         Bán xe của bạn với giá tốt nhất
       </p>
+      <p class="font-weight-bold text-center text-h5">
+        Bán xe của bạn với giá tốt nhất
+      </p>
     </div>
     <div class="card card-compact w-2/4 bg-base-100 shadow-xl card-bordered">
       <div class="card-body pa-10">
-        <h2 class="card-title">Bán xe</h2>
+        <h2 class="card-title">Bán xe Bán Xe</h2>
         <form action="" class="form-control w-full">
           <div class="form-control w-full mb-2">
             <label class="label">
