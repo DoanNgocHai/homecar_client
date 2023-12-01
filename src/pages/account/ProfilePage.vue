@@ -25,6 +25,8 @@
                 <img v-else-if="image" :src="image" />
                 <img v-else :src="path + profile.avatar" />
               </v-avatar>
+              <v-icon class="icon-camera" @click="onAvatarClick" color="success" icon="mdi-camera"></v-icon>
+
             </label>
           </div>
           <v-card-text>
@@ -35,7 +37,7 @@
                   dense
                   v-model="profile.name"
                   label="Name"
-                  outlined
+                  variant="outlined"
                   :rules="nameRules"
                   required
                 ></v-text-field>
@@ -48,7 +50,7 @@
                   label="Email"
                   :rules="emailRules"
                   required
-                  outlined
+                  variant="outlined"
                 ></v-text-field>
               </v-col>
               <v-col cols="12" md="6">
@@ -57,7 +59,7 @@
                   dense 
                   v-model="profile.phone"
                   label="Phone"
-                  outlined
+                  variant="outlined"
                   :rules="phoneRules"
                   required
                 ></v-text-field>
@@ -68,14 +70,15 @@
                   dense
                   v-model="profile.address"
                   label="Address"
-                  outlined
+                  variant="outlined"
                   :rules="addressRules"
                   required
                 ></v-text-field>
               </v-col>
-              <!-- <v-col cols="12" md="6">
+              <v-col cols="12" md="6">
                 <label>Birthday</label>
-                <v-menu
+                <VueDatePicker class="field_birthday" placeholder="Birth day" v-model="profile.date_of_birth" :enable-time-picker="false" />
+                <!-- <v-menu
                   ref="menu"
                   v-model="menu"
                   :close-on-content-click="false"
@@ -92,7 +95,7 @@
                       v-model="profile.date_of_birth"
                       readonly
                       v-bind="attrs"
-                      v-on="on"
+                      :on="on"
                       :rules="birthdayRules"
                       required
                     ></v-text-field>
@@ -111,13 +114,13 @@
                       Save
                     </v-btn>
                   </v-date-picker>
-                </v-menu>
-              </v-col> -->
+                </v-menu> -->
+              </v-col>
               <v-col cols="12" md="6">
                 <label>Citizen Identity</label>
                 <v-text-field
                   dense
-                  outlined
+                  variant="outlined"
                   v-model="profile.citizen_identity"
                   label="citizen_identity"
                   required
@@ -130,7 +133,7 @@
                   dense
                   v-model="profile.password"
                   label="Password"
-                  outlined
+                  variant="outlined"
                 ></v-text-field>
               </v-col>
               <v-col cols="12">
@@ -152,7 +155,10 @@ import { mapGetters } from 'vuex';
 import { getProfile, updateProfile } from '../../apis/profile/profile';
 import { useToast } from "vue-toastification";
 import { uploadFile } from '../../apis/common/upload-file'
+import VueDatePicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css'
 export default {
+  components: { VueDatePicker },
   data() {
     const toast = useToast();
     return {
@@ -197,8 +203,14 @@ export default {
       ],
       toast,
       loading: false,
-
+      formattedDateOfBirth: ''
     };
+  },
+  watch: {
+    // Khi profile.date_of_birth thay đổi, hãy cập nhật formattedDateOfBirth
+    'profile.date_of_birth': function (newValue) {
+      this.formattedDateOfBirth = this.formatDate(newValue);
+    }
   },
   created() {
     this.userProfile();
@@ -237,7 +249,6 @@ export default {
     },
     async Update() {
       this.loading = true;
-      console.log(this.avatar[0]);
       let param = { "image": this.avatar[0] };
       const data = await uploadFile(param);
       // if (this.profile.password != "") {
@@ -249,13 +260,13 @@ export default {
         name: this.profile.name,
         citizen_identity: this.profile.citizen_identity,
         // email: this.profile.email,
-        date_of_birth: this.profile.date_of_birth,
+        date_of_birth: this.formattedDateOfBirth,
         phone: this.profile.phone,
         address: this.profile.address,
         avatar: data.path,
         // password: this.profile.password,
       };
-
+      console.log(dataRs);
       try {
         const data = await updateProfile(dataRs);
         if (data) {
@@ -264,18 +275,39 @@ export default {
       } catch (error) {
         // Xử lý lỗi một cách thích hợp, ví dụ in ra console
         this.toast.error("Cập nhật hồ sơ thất bại!!");
-        console.error('Error submitting car info:', error);
       }
       this.loading = false;
     },
     onAvatarClick() {
       document.getElementById("avatar-input").click();
     },
+    formatDate(date) {
+      if (!date) return '';
+      // Tạo một đối tượng Date mới từ giá trị date
+      const d = new Date(date);
+      // Định dạng lại ngày tháng
+      let month = '' + (d.getMonth() + 1),
+          day = '' + d.getDate(),
+          year = d.getFullYear();
+      
+      // Thêm số 0 vào trước nếu là một chữ số
+      if (month.length < 2) 
+          month = '0' + month;
+      if (day.length < 2) 
+          day = '0' + day;
+
+      // Trả về chuỗi đã được định dạng
+      return [year,month,day].join('-');
+    }
   },
+  mounted() {
+    // Khi component được tạo, định dạng ngày tháng ban đầu
+    this.formattedDateOfBirth = this.formatDate(this.profile.date_of_birth);
+  }
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .v-avatar img:hover {
   cursor: -webkit-grab;
 }
@@ -291,5 +323,17 @@ label {
 }
 .v-avatar{
   margin-top: 50px;
+  cursor: pointer;
+  border: solid 3px #4caf50;
+}
+.icon-camera{
+  padding-top: 120px;
+  padding-left: 25px;
+  cursor: pointer;
+}
+.field-birthday{
+  padding: 15px;
+    padding-left: 35px;
+    border: 1px solid #a3a1a1 !important;
 }
 </style>

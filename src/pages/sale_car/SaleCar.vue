@@ -210,30 +210,28 @@ import { useToast } from "vue-toastification";
 
 import {
   getBrands,
-  BrandsResponse,
   Brand,
 
   Figures,
-  FiguresResponse,
   getFigures,
 
   Gears,
-  GearsResponse,
   getGears,
 
   Colors,
   getColors,
 
 } from '../../apis/taxonomy';
-
+import { useStore,mapGetters } from 'vuex';
 export default defineComponent({
   setup() {
     const router = useRouter();
     const toast = useToast();
-
+    const store = useStore();
     return {
       router,
-      toast
+      toast,
+      store
     }
   },
   data() {
@@ -277,16 +275,17 @@ export default defineComponent({
   methods: {
     async fetchBrands() {
       try {
-        const response: BrandsResponse = await getBrands();
-        this.brands = response.data.data;
+        const response = await getBrands();
+        this.brands = response.data;
+        this.store.dispatch('brandsAction', response.data);
       } catch (error) {
         console.error('Error fetching brands:', error);
       }
     },
     async fetchFigures() {
       try {
-        const response: FiguresResponse = await getFigures();
-        this.figures = response.data.data;
+        const response = await getFigures();
+        this.figures = response.data;
       } catch (error) {
         console.error('Error fetching brands:', error);
       }
@@ -301,8 +300,8 @@ export default defineComponent({
     },
     async fetchGears() {
       try {
-        const response: GearsResponse = await getGears();
-        this.gears = response.data.data;
+        const response = await getGears();
+        this.gears = response.data;
       } catch (error) {
         console.error('Error fetching brands:', error);
       }
@@ -352,6 +351,7 @@ export default defineComponent({
     },
   },
   computed: {
+    ...mapGetters(['brands']),
   },
   created() {
     this.fetchBrands();

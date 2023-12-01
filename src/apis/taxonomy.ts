@@ -6,15 +6,11 @@ export type Brand = {
   year: number;
 };
 
-export type BrandsResponse = {
-  data: Brand[];
-};
-
-export const getBrands = async (): Promise<BrandsResponse> => {
+export const getBrands = async (): Promise<any> => {
   try {
     const response = await instance.get('/taxonomy/brands');
     const data: Brand[] = response.data;
-    return { data };
+    return data;
   } catch (error) {
     // Xử lý lỗi một cách thích hợp
     throw new Error(`Không thể lấy dữ liệu thương hiệu`);
@@ -26,15 +22,12 @@ export type Figures = {
   name: string;
 };
 
-export type FiguresResponse = {
-  data: Figures[];
-};
 
-export const getFigures = async (): Promise<FiguresResponse> => {
+export const getFigures = async (): Promise<any> => {
   try {
     const response = await instance.get('/taxonomy/figures');
     const data: Figures[] = response.data;
-    return { data };
+    return data;
   } catch (error) {
     // Xử lý lỗi một cách thích hợp
     throw new Error(`Không thể lấy dữ liệu`);
@@ -47,15 +40,13 @@ export type Gears = {
   name: string;
 };
 
-export type GearsResponse = {
-  data: Gears[];
-};
 
-export const getGears = async (): Promise<GearsResponse> => {
+
+export const getGears = async (): Promise<any> => {
   try {
     const response = await instance.get('/taxonomy/gears');
     const data: Gears[] = response.data;
-    return { data };
+    return data;
   } catch (error) {
     // Xử lý lỗi một cách thích hợp
     throw new Error(`Không thể lấy dữ liệu`);
