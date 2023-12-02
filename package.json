@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@vuepic/vue-datepicker": "^7.3.0",
     "axios": "^1.6.0",
     "vee-validate": "^4.11.8",
     "vue": "^3.3.4",
@@ -36,4 +37,3 @@
     "vuetify-loader": "^1.9.2"
   }
 }
-  

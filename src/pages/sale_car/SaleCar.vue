@@ -10,10 +10,13 @@
       <p class="font-weight-bold text-center text-h5">
         Bán xe của bạn với giá tốt nhất
       </p>
+      <p class="font-weight-bold text-center text-h5">
+        Bán xe của bạn với giá tốt nhất
+      </p>
     </div>
     <div class="card card-compact w-2/4 bg-base-100 shadow-xl card-bordered">
       <div class="card-body pa-10">
-        <h2 class="card-title">Bán xe</h2>
+        <h2 class="card-title">Bán xe Bán Xe</h2>
         <form action="" class="form-control w-full">
           <div class="form-control w-full mb-2">
             <label class="label">
@@ -207,30 +210,28 @@ import { useToast } from "vue-toastification";
 
 import {
   getBrands,
-  BrandsResponse,
   Brand,
 
   Figures,
-  FiguresResponse,
   getFigures,
 
   Gears,
-  GearsResponse,
   getGears,
 
   Colors,
   getColors,
 
 } from '../../apis/taxonomy';
-
+import { useStore,mapGetters } from 'vuex';
 export default defineComponent({
   setup() {
     const router = useRouter();
     const toast = useToast();
-
+    const store = useStore();
     return {
       router,
-      toast
+      toast,
+      store
     }
   },
   data() {
@@ -274,16 +275,17 @@ export default defineComponent({
   methods: {
     async fetchBrands() {
       try {
-        const response: BrandsResponse = await getBrands();
-        this.brands = response.data.data;
+        const response = await getBrands();
+        this.brands = response.data;
+        this.store.dispatch('brandsAction', response.data);
       } catch (error) {
         console.error('Error fetching brands:', error);
       }
     },
     async fetchFigures() {
       try {
-        const response: FiguresResponse = await getFigures();
-        this.figures = response.data.data;
+        const response = await getFigures();
+        this.figures = response.data;
       } catch (error) {
         console.error('Error fetching brands:', error);
       }
@@ -298,8 +300,8 @@ export default defineComponent({
     },
     async fetchGears() {
       try {
-        const response: GearsResponse = await getGears();
-        this.gears = response.data.data;
+        const response = await getGears();
+        this.gears = response.data;
       } catch (error) {
         console.error('Error fetching brands:', error);
       }
@@ -349,6 +351,7 @@ export default defineComponent({
     },
   },
   computed: {
+    ...mapGetters(['brands']),
   },
   created() {
     this.fetchBrands();
