@@ -16,7 +16,7 @@ import Footer from './components/Footer.vue';
 <style scoped>
 .container-main {
   min-height: 70vh;
-  padding: 6rem 0;
+  padding: 5rem 0;
 }
 
 .logo {

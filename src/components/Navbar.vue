@@ -90,7 +90,7 @@ export default {
   position: fixed;
   z-index: 1;
   background: #ffff;
-  padding: 10px 17rem;
+  padding: 0px 5rem;
 }
 
 .logo {
@@ -102,10 +102,10 @@ export default {
   font-family: inherit;
   font-weight: 600!important;
   margin-right: 29px;
-  font-size: 19px;
+  font-size: 16px;
 }
 .menu-header ul li {
-  margin-right: 50px;
+  margin-right: 33px;
 }
 .car-like{
   margin-right: 20px;

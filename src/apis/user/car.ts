@@ -44,15 +44,14 @@ export const userSaleCar = async (
 
 export const listCar = async (page: number = 1): Promise<any> => {
   if (page != 1) {
-    const { data } = await instance.get("/user/cars?page="+page, headers);
+    const { data } = await instance.get("/anonymous/list_cars?page="+page);
     return data;
   }
-  const { data } = await instance.get("/user/cars", headers);
+  const { data } = await instance.get("/anonymous/list_cars", headers);
   return data;
 };
 
 export const getCarInfo = async (carId: any): Promise<any> => {
-  console.log("ksksks: ", carId );
-  const { data } = await instance.get("/user/cars/" + carId, headers);
+  const { data } = await instance.get("/anonymous/info_cars?id=" + carId);
   return data;
 };
