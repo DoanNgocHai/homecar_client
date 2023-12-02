@@ -19,6 +19,8 @@ import ListCar from "./components/home/ListCar.vue";
 import CarInfo from "./pages/buy_car/CarInfo.vue";
 
 import SaleCar from "./pages/sale_car/SaleCar.vue";
+import FavoritesCar from "./pages/favorites_car/FavoritesCar.vue";
+
 
 
 const routes: RouteRecordRaw[] = [
@@ -54,6 +56,8 @@ const routes: RouteRecordRaw[] = [
     ],
   },
   { path: "/sale-car", component: SaleCar },
+  { path: "/favorites-car", component: FavoritesCar },
+
 ];
 
 const router = createRouter({

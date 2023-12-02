@@ -338,7 +338,15 @@ import { uploadFile } from '../../apis/common/upload-file'
         engines:[
           'Xăng' , 'Dầu' ,'Điện' , 'Hybrid' ,'Hydro'
         ],
+        file_not_null:'',
         thumbnail: [],
+      }
+    },
+    watch: {
+      dialogEdit(newVal) {
+        if (!newVal) {
+          this.thumbnail = []
+        }
       }
     },
     created(){
@@ -362,17 +370,22 @@ import { uploadFile } from '../../apis/common/upload-file'
         }
       },
       editItem (item) {
-        this.dialogEdit = !this.dialogEdit
+        this.dialogEdit = !this.dialogEdit;
         //Object.assign() sao chép các thuộc tính có thể đếm được và sở hữu từ đối tượng nguồn sang đối tượng đích
-        this.editedItem = Object.assign({}, item)
-        
+        this.editedItem = Object.assign({}, item);
       },
 
       async submitInfo(id){
         try {
+          // let is_thumbnail = this.editedItem.thumbnail ;
           let param = { "image": this.thumbnail[0] };
-          const upload_file = await uploadFile(param);
-          this.editedItem.thumbnail = upload_file.path
+          let file_not_null = "";
+
+          if(this.thumbnail[0]){
+            file_not_null = { "image": this.thumbnail[0] };
+            const upload_file = await uploadFile(file_not_null);
+            this.editedItem.thumbnail = upload_file.path
+          }
           const data = await updateCar(id,this.editedItem);
           if (data) {
             this.toast.success("Cập nhật xe thành công!!");

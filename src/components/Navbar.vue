@@ -50,10 +50,10 @@
       </div>
       <div class="car-like px-2 items-center hidden lg:flex" bis_skin_checked="1">
         <div class="cursor-pointer tooltip w-[42px] h-[42px] flex justify-center items-center rounded-full border-gray-200 border" bis_skin_checked="1">
-          <a href="/xe-yeu-thich" class="w-full h-full flex justify-center items-center" rel="nofollow" aria-label="favorite-cars">
+          <router-link to="/favorites-car" class="w-full h-full flex justify-center items-center" rel="nofollow" aria-label="favorite-cars">
             <img src="../../public/images/heart.png" width="24" alt="xe yêu thích" height="24"> 
             <img src="../../public/images/heart_active_button.png" alt="xe yêu thích" width="24" height="24" style="display: none;">
-          </a> 
+          </router-link> 
         </div>
       </div>
       <span class="pr-2 cursor-pointer">

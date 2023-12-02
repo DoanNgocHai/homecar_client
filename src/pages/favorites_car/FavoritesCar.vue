@@ -51,7 +51,7 @@
                     <v-icon
                       @click="saveFavorites(item.id)"
                       color="#000000"
-                      icon="mdi-heart-outline"
+                      icon="mdi-heart"
                       size="large"
                     >
                     </v-icon>
