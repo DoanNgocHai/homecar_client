@@ -1,5 +1,5 @@
 <template>
-    <div class="mt-16">
+    <div class="">
       <v-row>
         <v-col cols="8">
           <v-card class="ml-5">
@@ -27,12 +27,22 @@
           <v-card-item>
             <v-row>
               <v-col><v-btn size="small" class="button" color="#f5ec42">Chứng nhận Car</v-btn></v-col>
+              <v-col class="d-flex justify-end">
+                <img
+                  class="icon-score"
+                  src="../../../public/images/logo_icon.png"
+                />
+                <span class="score">80/100</span>
+              </v-col>
             </v-row>
             <div class="container-content py-5">
                   <span class="content-style">{{ data.title }}</span>
             </div>
-            <p>Giá niêm yết:</p>
-            <v-card-title><h2 class="title-size">{{ data.price }} Triệu <span class="font-size">Chỉ từ 2.9 triệu/tháng</span></h2></v-card-title>
+            <div class="car-price">
+              <p>Giá niêm yết:</p>
+              <v-card-title><h2 class="title-size">{{ data.price }} Triệu <span class="font-size">Chỉ từ 2.9 triệu/tháng</span></h2></v-card-title>
+            </div>
+
             <div class="box-action">
               <v-row class="justify-center">
                 <v-col class="px-0 text-center"> <!-- Thêm lớp text-center để căn giữa theo chiều ngang -->
@@ -70,23 +80,64 @@
           </v-card-item>
 
           <v-row class="card">
-              <v-col cols="12">
-                <div class="box">
-                  <v-row>
-                    <v-col style="padding-bottom: 0px;">
-                      <div class="odo">
+            <v-col cols="12">
+              <div class="box">
+                <v-row>
+                  <v-col style="padding-bottom: 5px;">
+                    <div class="odo">
+                    <span class="icon">
+                      <v-icon
+                        color="#081f4d"
+                        icon="mdi-car-speed-limiter"
+                        size="small"
+                      ></v-icon>
+                    </span>
+                    <span>{{ data.odo }} km</span>
+                  </div>
+                  </v-col>
+                  <v-col style="padding-bottom: 5px;">
+                    <div class="odo">
                       <span class="icon">
                         <v-icon
                           color="#081f4d"
-                          icon="mdi-car-speed-limiter"
+                          icon="mdi-car-brake-abs"
                           size="small"
                         ></v-icon>
                       </span>
-                      <span>{{ data.odo }} km</span>
+                      <span>{{ data.brand?.name }}</span>
                     </div>
-                    </v-col>
-                    <v-col style="padding-bottom: 0px;">
-                      <div class="odo">
+                    
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col style="padding-bottom: 5px; padding-top: 5px;">
+                    <div class="odo">
+                    <span class="icon">
+                      <v-icon
+                        color="#081f4d"
+                        icon="mdi-tune-vertical"
+                        size="small"
+                      ></v-icon>
+                    </span>
+                    <span>{{ data.gear?.name }}</span>
+                  </div>
+                  </v-col>
+                  <v-col style="padding-bottom: 5px; padding-top: 5px;">
+                    <div class="odo">
+                    <span class="icon">
+                      <v-icon
+                        color="#081f4d"
+                        icon="mdi-water-boiler"
+                        size="small"
+                      ></v-icon>
+                    </span>
+                    <span>Xe {{ data.engine }}</span>
+                  </div>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col style="padding-bottom: 5px; padding-top: 5px;">
+                    <div class="odo">
                       <span class="icon">
                         <v-icon
                           color="#081f4d"
@@ -94,62 +145,23 @@
                           size="small"
                         ></v-icon>
                       </span>
-                      <span>5 chỗ</span>
+                      <span>{{ data.seat }} chỗ</span>
                     </div>
+                    </v-col>
+                    <v-col style="padding-bottom: 0px; padding-top: 5px;">
+                      <div class="odo">
+                        <span class="icon">
+                          <v-icon
+                            color="#081f4d"
+                            icon="mdi-map-marker"
+                            size="small"
+                          ></v-icon>
+                        </span>
+                        <span>SX: {{ data.year }}</span>
+                      </div>
                     </v-col>
                   </v-row>
-                  <v-row>
-                    <v-col style="padding-bottom: 0px; padding-top: 5px;">
-                      <div class="odo">
-                      <span class="icon">
-                        <v-icon
-                          color="#081f4d"
-                          icon="mdi-tune-vertical"
-                          size="small"
-                        ></v-icon>
-                      </span>
-                      <span>Số sàn {{ data.gear_id }} cấp</span>
-                    </div>
-                    </v-col>
-                    <v-col style="padding-bottom: 0px; padding-top: 5px;">
-                      <div class="odo">
-                      <span class="icon">
-                        <v-icon
-                          color="#081f4d"
-                          icon="mdi-water-boiler"
-                          size="small"
-                        ></v-icon>
-                      </span>
-                      <span>36.399 km</span>
-                    </div>
-                    </v-col>
-                  </v-row>
-                  <v-row>
-                    <v-col style="padding-bottom: 0px; padding-top: 5px;">
-                      <div class="odo">
-                      <span class="icon">
-                        <v-icon
-                          color="#081f4d"
-                          icon="mdi-card-account-details-outline"
-                          size="small"
-                        ></v-icon>
-                      </span>
-                      <span>{{ data.brand_id }}</span>
-                    </div>
-                    </v-col>
-                    <v-col style="padding-bottom: 0px; padding-top: 5px;">
-                      <div class="odo">
-                      <span class="icon">
-                        <v-icon
-                          color="#081f4d"
-                          icon="mdi-map-marker"
-                          size="small"
-                        ></v-icon>
-                      </span>
-                      <span>SX: {{ data.year }}</span>
-                    </div>
-                    </v-col>
-                  </v-row>
+                  
                 </div>
                 
               </v-col>
@@ -487,5 +499,14 @@ export default {
 
 .card button span {
   color: #081f4d;
+}
+.car-price p {
+  color: #081f4d;
+}
+.score{
+  position: relative;
+  top: 6px;
+  color: #1c2c5e;
+  font-weight: 600;
 }
 </style>
