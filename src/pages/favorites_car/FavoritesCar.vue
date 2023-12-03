@@ -1,71 +1,84 @@
 <template>
     <div>
-      <v-row class="px-8">
+      <v-row class="px-20">
+        <v-col cols="12">
+          <v-card-title><h2 class="title-size"><span></span>Ô tô trong danh sách xe yêu thích của bạn</h2></v-card-title>
+        </v-col>
         <v-col class="py" cols="4" v-for="(item, index) in data" :key="index">
           <v-card
           :loading="loading"
           max-width="500"
-        >
-          <template v-slot:loader="{ isActive }">
-            <v-progress-linear
-              :active="isActive"
-              color="deep-purple"
-              height="4"
-              indeterminate
-            ></v-progress-linear>
-          </template>
-          <a @click="getCarInfo(item?.id)" >
-            <v-img
-              v-if="!item.thumbnail"
-              src="../../../public/images/logoCar.png"
-              cover
-              height="250"
-            ></v-img>
-            <v-img
-              cover
-              height="250"
-              v-else :src="path + item.thumbnail"
-            ></v-img>
-          </a>
-          <v-card-item>
-            <v-row>
-              <v-col><v-btn size="small" class="button" color="#f5ec42">Chứng nhận Car</v-btn></v-col>
-              <v-col class="d-flex justify-end">
-                <img
-                  class="icon-score"
-                  src="../../../public/images/logo_icon.png"
-                />
-                <span class="score">80/100</span>
-              </v-col>
-            </v-row>
-            
-            <v-card-title><h2 class="title-size">{{formatNumber(item.price)}} <span class="font-size">Chỉ từ 2.9 triệu/tháng</span></h2></v-card-title>
-
-            <div>
-              <v-row >
-                <v-col cols="10" class="container-content">
-                  <span class="content-style">{{ item.title }}</span>
-                </v-col>
-                <v-col cols="2">
-                  <span class="me-1">
-                    <v-icon
-                      @click="saveFavorites(item.id)"
-                      color="#000000"
-                      icon="mdi-heart"
-                      size="large"
-                    >
-                    </v-icon>
-                    <v-tooltip
-                      activator="parent"
-                      location="bottom"
-                    >Lưu vào xe yêu thích của bạn</v-tooltip>
-                  </span>
+          >
+          <v-btn @click="deleteFavorites(item.id)">x</v-btn>
+            <template v-slot:loader="{ isActive }">
+              <v-progress-linear
+                :active="isActive"
+                color="deep-purple"
+                height="4"
+                indeterminate
+              ></v-progress-linear>
+            </template>
+            <a @click="getCarInfo(item?.car?.id)" >
+              <v-img
+                v-if="!item.car.thumbnail"
+                src="../../../public/images/logoCar.png"
+                cover
+                height="250"
+              ></v-img>
+              <v-img
+                cover
+                height="250"
+                v-else :src="path + item.car.thumbnail"
+              ></v-img>
+            </a>
+            <v-card-item>
+              <v-row>
+                <v-col><v-btn size="small" class="button" color="#f5ec42">Chứng nhận Car</v-btn></v-col>
+                <v-col class="d-flex justify-end">
+                  <img
+                    class="icon-score"
+                    src="../../../public/images/logo_icon.png"
+                  />
+                  <span class="score">80/100</span>
                 </v-col>
               </v-row>
-            </div>
-          </v-card-item>
+              
+              <v-card-title><h2 class="title-size">{{formatNumber(item.car.price)}} <span class="font-size">Chỉ từ 2.9 triệu/tháng</span></h2></v-card-title>
 
-          <v-row class="card">
+              <div>
+                <v-row >
+                  <v-col cols="10" class="container-content">
+                    <span class="content-style">{{ item.car.title }}</span>
+                  </v-col>
+                  <v-col cols="2">
+                    <span class="me-1">
+                      <v-icon
+                        @click="saveFavorites(item.car.id)"
+                        color="#000000"
+                        icon="mdi-heart"
+                        size="large"
+                      >
+                      </v-icon>
+                      <v-tooltip
+                        activator="parent"
+                        location="bottom"
+                      >Lưu vào xe yêu thích của bạn</v-tooltip>
+                    </span>
+<!-- <span class="me-1">
+  <v-icon
+    @click="toggleFavorite(item.id)"
+    :color="isFavorite(item.id) ? 'red' : '#000000'"
+    :icon="isFavorite(item.id) ? 'mdi-heart' : 'mdi-heart-outline'"
+    size="large"
+  >
+  </v-icon>
+</span> -->
+                  </v-col>
+                </v-row>
+              </div>
+            </v-card-item>
+
+            <v-row class="card">
               <v-col cols="12">
                 <div class="box">
                   <v-row>
@@ -78,7 +91,7 @@
                           size="small"
                         ></v-icon>
                       </span>
-                      <span>{{ item.odo }} km</span>
+                      <span>{{ item.car.odo }} km</span>
                     </div>
                     </v-col>
                     <v-col style="padding-bottom: 5px;">
@@ -90,11 +103,12 @@
                             size="small"
                           ></v-icon>
                         </span>
-                        <span>{{ item.brand.name }}</span>
+                        <span>{{ item.car.brand.name }}</span>
                       </div>
                       
                     </v-col>
                   </v-row>
+                  
                   <v-row>
                     <v-col style="padding-bottom: 5px; padding-top: 5px;">
                       <div class="odo">
@@ -105,7 +119,7 @@
                           size="small"
                         ></v-icon>
                       </span>
-                      <span>{{ item.gear.name }}</span>
+                      <span>{{ item.car.gear.name }}</span>
                     </div>
                     </v-col>
                     <v-col style="padding-bottom: 5px; padding-top: 5px;">
@@ -117,7 +131,7 @@
                           size="small"
                         ></v-icon>
                       </span>
-                      <span>Xe {{ item.engine }}</span>
+                      <span>Xe {{ item.car.engine }}</span>
                     </div>
                     </v-col>
                   </v-row>
@@ -131,7 +145,7 @@
                             size="small"
                           ></v-icon>
                         </span>
-                        <span>{{ item.seat }} chỗ</span>
+                        <span>{{ item.car.seat }} chỗ</span>
                       </div>
                     </v-col>
                     <v-col style="padding-bottom: 5px; padding-top: 5px;">
@@ -143,23 +157,21 @@
                           size="small"
                         ></v-icon>
                       </span>
-                      <span>Năm {{ item.year }}</span>
+                      <span>Năm {{ item.car.year }}</span>
                     </div>
                     </v-col>
                   </v-row>
                 </div>
               </v-col>
             </v-row>
-        </v-card>
+          </v-card>
         </v-col>
       </v-row>
-      <v-btn v-if="isLastPage" @click="loadMore">xem thêm</v-btn>
     </div>
 </template>
 
 <script lang="ts">
-import { listCar } from '../../apis/user/car';
-import { saveCarFavorites, SaveFavoritesDto } from '../../apis/user/favorites';
+import { saveCarFavorites, SaveFavoritesDto,listCarFavorites,deleteCarFavorites } from '../../apis/user/favorites';
 import { useToast } from "vue-toastification";
 export default {
   data() {
@@ -169,8 +181,6 @@ export default {
       loading: false,
       selection: 1,
       data: [],
-      perPage: 1,
-      isLastPage: false,
       toast
     };
   },
@@ -183,26 +193,13 @@ export default {
   },
   methods: {
     async getData() {
-      const data = await listCar();
+      const data = await listCarFavorites();
+      
       if (data) {
-        this.isLastPage = this.perPage < data.last_page;
-        this.data = data?.data;
-      }
-    },
-    async loadMore() {
-      this.perPage++;
-      const data = await listCar(this.perPage);
-      if (data && this.isLastPage) {
-        this.isLastPage = this.perPage < data.last_page;
-        data?.data.forEach((item:any) => {
-          this.data.push(item);
-        });
-      }
-    },
-    reserve () {
-      this.loading = true
+        this.data = data;
+      console.log(data);
 
-      setTimeout(() => (this.loading = false), 2000)
+      }
     },
     getCarInfo(id:string) {
       this.$router.push({ path: '/car-info/' + id });
@@ -232,8 +229,50 @@ export default {
       } catch (error) {
         this.toast.warning("Xe này đã được thêm vào trước đó!!");
       }
-      
-    }
+    },
+    async deleteFavorites(favId: any) {
+      try {
+        const data = await deleteCarFavorites(favId);
+        if (data) {
+          this.toast.success("Đã xóa khỏi xe yêu thích!!");
+        }
+      } catch (error) {
+        this.toast.warning("lỗi");
+      }
+    },
+    isFavorite(vehicleId:any) {
+      return this.data.includes(vehicleId);
+    },
+    async toggleFavorite(vehicleId:any) {
+      const index = this.data.indexOf(vehicleId);
+      const saveFavoritesDto: SaveFavoritesDto = {
+        car_id: vehicleId || '',
+      };
+      if (index === -1) {
+        try {
+          // Gọi API để thêm vào danh sách yêu thích
+          const data = await saveCarFavorites(saveFavoritesDto);
+          console.log(data);
+          if (data) {
+            this.toast.success("Đã thêm vào xe yêu thích!!");
+          }
+          this.data.push(vehicleId);
+        } catch (error) {
+          this.toast.error("lỗi");
+          console.error('Có lỗi khi thêm vào yêu thích', error);
+        }
+      } else {
+        try {
+          const data = await deleteCarFavorites(favId);
+          this.data.splice(index, 1);
+          if (data) {
+            this.toast.success("Đã xóa khỏi xe yêu thích!!");
+          }
+        } catch (error) {
+          this.toast.warning("lỗi");
+        }
+      }
+    },
   }
 }
 </script>

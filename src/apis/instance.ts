@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig } from "axios";
 
-const AUTHENTICATED_KEY = "access_token"; // Thay thế bằng key thực tế của bạn
+const AUTHENTICATED_KEY = "access_token";
 
 export const instance = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
