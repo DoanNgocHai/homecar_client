@@ -47,7 +47,7 @@ export const listCar = async (page: number = 1): Promise<any> => {
     const { data } = await instance.get("/anonymous/list_cars?page="+page);
     return data;
   }
-  const { data } = await instance.get("/anonymous/list_cars", headers);
+  const { data } = await instance.get("/anonymous/list_cars");
   return data;
 };
 

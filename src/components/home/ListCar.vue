@@ -47,7 +47,7 @@
                   <span class="content-style">{{ item.title }}</span>
                 </v-col>
                 <v-col cols="2">
-                  <span class="me-1">
+                  <!-- <span class="me-1">
                     <v-icon
                       @click="saveFavorites(item.id)"
                       color="#000000"
@@ -59,6 +59,15 @@
                       activator="parent"
                       location="bottom"
                     >Lưu vào xe yêu thích của bạn</v-tooltip>
+                  </span> -->
+                  <span class="me-1">
+                    <v-icon
+                      @click="toggleFavorite(item.id)"
+                      :color="isFavorite(item.id) ? 'red' : '#000000'"
+                      :icon="isFavorite(item.id) ? 'mdi-heart' : 'mdi-heart-outline'"
+                      size="large"
+                    >
+                    </v-icon>
                   </span>
                 </v-col>
               </v-row>
@@ -90,7 +99,7 @@
                             size="small"
                           ></v-icon>
                         </span>
-                        <span>{{ item.brand.name }}</span>
+                        <span>{{ item.brand?.name }}</span>
                       </div>
                       
                     </v-col>
@@ -105,7 +114,7 @@
                           size="small"
                         ></v-icon>
                       </span>
-                      <span>{{ item.gear.name }}</span>
+                      <span>{{ item.gear?.name }}</span>
                     </div>
                     </v-col>
                     <v-col style="padding-bottom: 5px; padding-top: 5px;">
@@ -153,13 +162,16 @@
         </v-card>
         </v-col>
       </v-row>
-      <v-btn v-if="isLastPage" @click="loadMore">xem thêm</v-btn>
+      <div class="d-flex justify-space-around pt-10 ">
+        <v-btn style="color: #1c2c5e; font-weight: 500; font-size: 16px;" color="yellow" class="text-none" v-if="isLastPage" @click="loadMore" rounded="xl" >Xem thêm</v-btn>
+      </div>
+      
     </div>
 </template>
 
 <script lang="ts">
 import { listCar } from '../../apis/user/car';
-import { saveCarFavorites, SaveFavoritesDto } from '../../apis/user/favorites';
+import { saveCarFavorites, SaveFavoritesDto,listCarFavorites, deleteCarFavorites } from '../../apis/user/favorites';
 import { useToast } from "vue-toastification";
 export default {
   data() {
@@ -169,9 +181,11 @@ export default {
       loading: false,
       selection: 1,
       data: [],
+      favoriteVehicles: [], 
       perPage: 1,
       isLastPage: false,
-      toast
+      toast,
+      id_fav: '',
     };
   },
   setup() {
@@ -180,6 +194,7 @@ export default {
   },
   created(){
     this.getData();
+    this.getFavorites();
   },
   methods: {
     async getData() {
@@ -217,7 +232,15 @@ export default {
         return `${billions}~ Tỉ`;
       } 
       else {
-        return number.toString();
+        return number;
+      }
+    },
+    async getFavorites() {
+      const data = await listCarFavorites();
+      
+      if (data) {
+        this.favoriteVehicles = data;
+        console.log('yeu thich');
       }
     },
     async saveFavorites(carId:any){
@@ -233,7 +256,43 @@ export default {
         this.toast.warning("Xe này đã được thêm vào trước đó!!");
       }
       
-    }
+    },
+    isFavorite(vehicleId:any) {
+      return this.data.includes(vehicleId);
+    },
+    async toggleFavorite(vehicleId: any) {
+      const index = this.data.indexOf(vehicleId);
+      const saveFavoritesDto: SaveFavoritesDto = {
+        car_id: vehicleId || '',
+      };
+      if (index === -1) {
+        try {
+          // Gọi API để thêm vào danh sách yêu thích
+          const data = await saveCarFavorites(saveFavoritesDto);
+          if (data) {
+            this.toast.success("Đã Thêm vào xe yêu thích!!");
+          }
+          this.getFavorites();
+          this.id_fav = data.id
+          this.data.push(vehicleId);
+          console.log(this.id_fav);
+
+        } catch (error) {
+          this.toast.error("lỗi");
+          console.error('Có lỗi khi thêm vào yêu thích', error);
+        }
+      } else {
+        try {
+          const data = await deleteCarFavorites(this.id_fav);
+          this.data.splice(index, 1);
+          if (data) {
+            this.toast.success("Đã Xóa!!");
+          }
+        } catch (error) {
+          this.toast.warning("lỗi");
+        }
+      }
+    },
   }
 }
 </script>

@@ -85,7 +85,6 @@ export default {
         const data = await login({ email, password });
         if (data) {
           setToken(data.access_token);
-          // Chuyển hướng về trang chủ
           this.store.dispatch('userAction', data);
           this.router.push('/');
           this.toast.success("Đăng nhập thành công");
@@ -93,7 +92,6 @@ export default {
           
         }
       } catch (error) {
-        // Hiển thị thông báo lỗi cho người dùng (nếu cần)
         this.toast.error("Đăng nhập thất bại, vui lòng kiểm tra lại thông tin đăng nhập.");
       }
       this.loading = false;

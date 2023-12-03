@@ -40,7 +40,7 @@
             </div>
             <div class="car-price">
               <p>Giá niêm yết:</p>
-              <v-card-title><h2 class="title-size">{{ data.price }} Triệu <span class="font-size">Chỉ từ 2.9 triệu/tháng</span></h2></v-card-title>
+              <v-card-title><h2 class="title-size">{{ data.price }}<span class="6">₫</span> <span class="font-size">Chỉ từ 2.9 triệu/tháng</span></h2></v-card-title>
             </div>
 
             <div class="box-action">
@@ -508,5 +508,10 @@ export default {
   top: 6px;
   color: #1c2c5e;
   font-weight: 600;
+}
+.icon-score{
+    width: 43px;
+  height: 33px;
+  padding-right: 10px;
 }
 </style>

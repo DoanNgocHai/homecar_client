@@ -15,7 +15,13 @@ export const saveCarFavorites = async (
 };
 
 export const listCarFavorites = async (): Promise<any> => {
-    const { data } = await instance.get("/user/favorites", headers);
-    return data;
+  const { data } = await instance.get("/user/favorites", headers);
+  return data;
+};
+
+
+export const deleteCarFavorites = async (favId: any): Promise<any> => {
+  const { data } = await instance.delete("/user/favorites/" + favId, headers);
+  return data;
 };
   
