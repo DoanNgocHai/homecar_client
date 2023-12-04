@@ -4,7 +4,7 @@ import LoginPage from "./pages/auth/LoginPage.vue";
 import RegisterPage from "./pages/auth/RegisterPage.vue";
 import ProfilePage from "./pages/account/ProfilePage.vue";
 import ChangePasswordPage from "./pages/account/ChangePasswordPage.vue";
-import LikeCarPage from "./pages/account/LikeCarPage.vue";
+import HistoryTransaction from "./pages/account/HistoryTransaction.vue";
 import AccountLayout from "./pages/account/AccountLayout.vue";
 import HistoryBuyCarPage from "./pages/account/HistoryBuyCarPage.vue";
 import HistorySaleCarPage from "./pages/account/HistorySaleCarPage.vue";
@@ -40,7 +40,7 @@ const routes: RouteRecordRaw[] = [
     children: [
       { path: "profile", component: ProfilePage },
       { path: "change-password", component: ChangePasswordPage },
-      { path: "like-car", component: LikeCarPage },
+      { path: "history-transaction", component: HistoryTransaction },
       { path: "history-buy-car", component: HistoryBuyCarPage },
       { path: "history-sale-car", component: HistorySaleCarPage },
       {
