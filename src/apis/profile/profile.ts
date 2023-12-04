@@ -28,16 +28,9 @@ export const getProfile = async (): Promise<any> => {
     }
 };
 
-export type UpdateProfileDto = {
-    name: string;
-    date_of_birth: string;
-    address: string;
-    phone: string;
-};
-  
   
 export const updateProfile = async (
-    updateProfileDto: UpdateProfileDto
+    updateProfileDto: any
 ): Promise<any> => {
     const { data } = await instance.put("/profile", updateProfileDto, headers);
     return data;

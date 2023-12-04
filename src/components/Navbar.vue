@@ -26,7 +26,7 @@
             <div class="menu-dropdown-nav py-4 bg-white">
               <ul class="list-none top-2 text-gray-700 pt-1 mx-4">
                 <li>
-                  <router-link to="/account" class="w-full py-2 px-4 hover:bg-slate-200 block whitespace-no-wrap rounded-md navbar-item-link" rel="nofollow">Info</router-link>
+                  <router-link to="/account" class="w-full py-2 px-4 hover:bg-slate-200 block whitespace-no-wrap rounded-md navbar-item-link" rel="nofollow">Quản lý</router-link>
                 </li>
                 <li>
                   <router-link to="/auth/register" class="w-full py-2 px-4 hover:bg-slate-200 block whitespace-no-wrap rounded-md navbar-item-link mb-1" rel="nofollow">Đăng ký</router-link>
@@ -41,7 +41,10 @@
             <div class="menu-dropdown-nav py-4 bg-white">
               <ul class="list-none top-2 text-gray-700 pt-1 mx-4">
                 <li>
-                  <router-link to="/account" class="w-full py-2 px-4 hover:bg-slate-200 block whitespace-no-wrap rounded-md navbar-item-link" rel="nofollow">Info</router-link>
+                  <router-link to="/account" class="w-full py-2 px-4 hover:bg-slate-200 block whitespace-no-wrap rounded-md navbar-item-link" rel="nofollow">Quản lý</router-link>
+                </li>
+                <li>
+                  <a @click="onSubmit()" class="w-full py-2 px-4 hover:bg-slate-200 block whitespace-no-wrap rounded-md navbar-item-link" rel="nofollow">Đăng xuất</a>
                 </li>
               </ul>
             </div>
@@ -66,16 +69,27 @@
 <script>
 // import { getHeader } from "../apis/instance";
 import { mapGetters } from 'vuex';
+import { logout } from '../apis/auth';
 
 export default {
   data() {
-    // const {headers} = getHeader();
     return {
       isVisible: false,
-      // headers,
     };
   },
   methods: {
+    async onSubmit() {
+      try {
+        const data = await logout();
+        if (data) {
+          this.toast.success("Đăng xuất thành công");
+          console.log(data);
+        }
+      } catch (error) {
+        this.toast.error("lỗi");
+      }
+      this.loading = false;
+    }
   },
   // mounted() {
   //   setInterval(() => {

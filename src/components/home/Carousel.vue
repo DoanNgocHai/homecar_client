@@ -21,7 +21,7 @@
       return {
         slides: [
           {
-            src: 'https://cdn.vuetifyjs.com/images/carousel/squirrel.jpg',
+            src: 'https://images-cdn.carpla.vn/cms/banner-pham-van-dong-1700463326.354.jpg',
           },
           {
             src: 'https://cdn.vuetifyjs.com/images/carousel/sky.jpg',
