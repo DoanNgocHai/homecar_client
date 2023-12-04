@@ -240,7 +240,6 @@ export default {
     },
     async getFavorites() {
       const data = await listCarFavorites();
-      
       if (data) {
         this.favoriteVehicles = data;
         console.log('yeu thich');

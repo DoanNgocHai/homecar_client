@@ -70,25 +70,31 @@
 // import { getHeader } from "../apis/instance";
 import { mapGetters } from 'vuex';
 import { logout } from '../apis/auth';
+import { useToast } from "vue-toastification";
 
 export default {
   data() {
+    const toast = useToast();
     return {
       isVisible: false,
+      toast,
     };
   },
   methods: {
     async onSubmit() {
-      try {
-        const data = await logout();
-        if (data) {
+      // try {
+      //   const data = await logout();
+      //   if (data) {
           this.toast.success("Đăng xuất thành công");
-          console.log(data);
-        }
-      } catch (error) {
-        this.toast.error("lỗi");
-      }
-      this.loading = false;
+          localStorage.removeItem('access_token');
+          localStorage.removeItem('user');
+          this.$router.push({ path: '/auth/login'});
+
+      //   }
+      // } catch (error) {
+      //   this.toast.error("lỗi");
+      // }
+      // this.loading = false;
     }
   },
   // mounted() {

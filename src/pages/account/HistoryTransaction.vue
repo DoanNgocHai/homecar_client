@@ -193,7 +193,6 @@ export default {
       data: [],
       search: '',
       dialogConfirmSeller: false,
-      dialogEdit: false,
       dialogConfirmBuyer: false,
       items: [],
 
@@ -334,6 +333,9 @@ export default {
     async confirmSeller() {
       try {
         const data = await confirmSale(this.idTran.id);
+        this.getDataBuyer();
+        this.getDataSeller();
+        this.dialogConfirmSeller = !this.dialogConfirmSeller;
         this.toast.success("Đã cập nhật giao dịch");
       } catch (error) {
         // Xử lý lỗi một cách thích hợp, ví dụ in ra console
@@ -344,6 +346,9 @@ export default {
     async sellerApprove() {
       try {
         await postSellerApprove(this.idTran.id);
+        this.getDataBuyer();
+        this.getDataSeller();
+
         this.toast.success("Đã cập nhật giao dịch");
       } catch (error) {
         // Xử lý lỗi một cách thích hợp, ví dụ in ra console
@@ -356,6 +361,9 @@ export default {
       try {
         await postSellerRefuse(this.idTran.id);
         this.toast.success("Đã cập nhật giao dịch");
+        this.getDataBuyer();
+        this.getDataSeller();
+
       } catch (error) {
         // Xử lý lỗi một cách thích hợp, ví dụ in ra console
         this.toast.error("Cập nhật hồ sơ thất bại!!");
@@ -366,6 +374,8 @@ export default {
     async buyerApprove() {
       try {
         await postBuyerApprove(this.idTran.id);
+        this.getDataBuyer();
+        this.getDataSeller();
         this.toast.success("Đã cập nhật giao dịch");
       } catch (error) {
         // Xử lý lỗi một cách thích hợp, ví dụ in ra console
@@ -377,6 +387,8 @@ export default {
     async buyerRefuse() {
       try {
         await postBuyerRefuse(this.idTran.id);
+            this.getDataBuyer();
+        this.getDataSeller();
         this.toast.success("Đã cập nhật giao dịch");
       } catch (error) {
         // Xử lý lỗi một cách thích hợp, ví dụ in ra console

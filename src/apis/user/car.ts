@@ -75,6 +75,8 @@ export const deleteCar = async (carId: any): Promise<any> => {
 };
 
 export const buyCarByCarId = async (carId: number): Promise<any> => {
+  console.log(carId);
+  
   const { data } = await instance.post(
     "/transaction/rest",
     {
