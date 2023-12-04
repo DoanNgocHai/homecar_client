@@ -340,11 +340,10 @@ export default defineComponent({
         const data = await userSaleCar(createCarDto);
 
         if (data) {
-          // this.router.push('/account/history-sale-car');
+          this.router.push('/account/history-sale-car');
           this.toast.success("Thêm mới xe thành công, vui lòng đợi xét duyệt!!");
         }
       } catch (error) {
-        // Xử lý lỗi một cách thích hợp, ví dụ in ra console
         this.toast.error("Thêm mới xe thất bại!!");
         console.error('Error submitting car info:', error);
       }
