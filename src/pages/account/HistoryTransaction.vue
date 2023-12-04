@@ -21,6 +21,9 @@
       <template v-slot:header.car.user.name>
         <div class="header_title">Người bán</div>
       </template>
+      <template v-slot:header.user.name>
+        <div class="header_title">Người mua</div>
+      </template>
       <template v-slot:header.car.price>
         <div class="header_title">Price</div>
       </template>
@@ -83,6 +86,9 @@
       </template>
       <template v-slot:header.car.user.name>
         <div class="header_title">Người bán</div>
+      </template>
+      <template v-slot:header.user.name>
+        <div class="header_title">Người mua</div>
       </template>
       <template v-slot:header.car.price>
         <div class="header_title">Price</div>
@@ -215,6 +221,10 @@ export default {
           value: 'car.user.name'
         },
         {
+          text: 'Name Buyer',
+          value: 'user.name'
+        },
+        {
           text: 'Price',
           value: 'car.price',
         },
@@ -243,6 +253,8 @@ export default {
     },
     async getDataSeller() {
       const data = await listHistoryTransactionSeller();
+      console.log(data);
+      
       if (data) {
         this.items_seller = data;
       }
