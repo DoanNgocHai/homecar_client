@@ -17,7 +17,7 @@ export const instanceUpload = axios.create({
 });
 
 export const getHeader = (): AxiosRequestConfig => {
-  let token = window.localStorage.getItem(AUTHENTICATED_KEY);
+  let token = localStorage.getItem(AUTHENTICATED_KEY);
 
   if (token == null) {
     localStorage.clear();

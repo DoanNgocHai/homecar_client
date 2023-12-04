@@ -182,7 +182,7 @@
                   color="green-darken-3"
                   size="large"
                   variant="flat"
-                  @click="loading = !loading"
+                  @click="buyCar"
                 >
                   Mua ngay
                 </v-btn>
@@ -332,8 +332,18 @@
 </template>
 
 <script lang="ts">
-import { getCarInfo } from '../../apis/user/car.js';
+import { useToast } from 'vue-toastification';
+import { buyCarByCarId, getCarInfo } from '../../apis/user/car.js';
+
 export default {
+  setup() {
+    const toast = useToast();
+
+    return {
+      toast,
+    }
+  },
+  
   data() {
     return {
       loading: false,
@@ -364,11 +374,10 @@ export default {
     };
   },
   mounted() {
-    console.log(this.$route.params.carId);
+    
   },
   created(){
     this.getData();
-    
   },
   methods: {
     async getData() {
@@ -387,6 +396,14 @@ export default {
     convertNumtoPrice(number: any) {
       console.log(number?.slice(0, -6));
       return number?.slice(0, 2);
+    },
+
+    async buyCar() {
+      const carId = this.$route.params.carId as string;
+      const res = await buyCarByCarId(parseInt(carId));
+      if (res) {
+        this.toast.success("Gửi yêu cầu mua xe thành công");
+      }
     },
 
   },

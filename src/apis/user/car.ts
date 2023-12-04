@@ -63,6 +63,7 @@ export const updateCar = async (
   const { data } = await instance.patch("/user/cars/" + carId , updateCarDto, headers);
   return data;
 };
+
 export const historySale = async (): Promise<any> => {
   const { data } = await instance.get("/user/history-sale", headers);
   return data;
@@ -70,5 +71,17 @@ export const historySale = async (): Promise<any> => {
 
 export const deleteCar = async (carId: any): Promise<any> => {
   const { data } = await instance.delete("/user/cars/" + carId, headers);
+  return data;
+};
+
+export const buyCarByCarId = async (carId: number): Promise<any> => {
+  const { data } = await instance.post(
+    "/transaction/rest",
+    {
+      car_id: carId,
+    },
+    headers
+  );
+
   return data;
 };
