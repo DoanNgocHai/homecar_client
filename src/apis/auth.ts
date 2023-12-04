@@ -1,4 +1,6 @@
-import { instance } from "./instance";
+import { instance, getHeader } from "./instance";
+
+const headers = getHeader();
 
 export type RegisterDto = {
   email: string;
@@ -35,4 +37,9 @@ export type LoginResponse = {
 export const login = async (loginDto: LoginDto): Promise<LoginResponse> => {
   const { data } = await instance.post("/auth/login", loginDto);
   return data as LoginResponse;
+};
+
+export const logout = async (): Promise<any> => {
+  const { data } = await instance.post("/auth/logout",{}, headers);
+  return data;
 };

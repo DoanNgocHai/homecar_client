@@ -1,6 +1,9 @@
 <template>
     <div>
       <v-row class="px-8">
+        <v-col cols="12" class="py-10 pt-10">
+          <v-card-title><h1 class="title-size"><span></span>Khám phá xe yêu thích</h1></v-card-title>
+        </v-col>
         <v-col class="py" cols="4" v-for="(item, index) in data" :key="index">
           <v-card
           :loading="loading"

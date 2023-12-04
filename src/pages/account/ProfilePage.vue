@@ -258,7 +258,7 @@ export default {
       // }
       const dataRs = {
         name: this.profile.name,
-        citizen_identity: this.profile.citizen_identity,
+        // citizen_identity: this.profile.citizen_identity,
         // email: this.profile.email,
         date_of_birth: this.formattedDateOfBirth,
         phone: this.profile.phone,

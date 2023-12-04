@@ -6,7 +6,7 @@
             <v-img
               cover
               height="500"
-              src="https://cdn.vuetifyjs.com/images/cards/cooking.png"
+              :src="path + data.thumbnail"
             ></v-img>
           </v-card>
         </v-col>
@@ -336,6 +336,7 @@ import { getCarInfo } from '../../apis/user/car.js';
 export default {
   data() {
     return {
+      path: "http://127.0.0.1:8000",
       loading: false,
       selection: 1,
       currentId: '',

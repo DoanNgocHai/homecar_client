@@ -1,5 +1,5 @@
 import { createStore, Commit, Dispatch, ActionContext } from 'vuex';
-
+const user = JSON.parse(localStorage.getItem('user') || 'null');
 
 // Kiểu của state trong store
 interface RootState {
@@ -12,18 +12,21 @@ interface RootState {
 
 export const store = createStore({
   state: {
-    user: null,
+    user: user,
     brands: null,
     figures: null,
     gears: null,
     colors: null,
-  } as RootState, // Sử dụng kiểu RootState cho state
+  } as RootState, 
 
   modules: {},
 
   mutations: {
-    user(state: RootState, user: any ) {
-      state.user = user;
+    setUser(state: RootState, user: any) {
+      if (user !== null) {
+        state.user = user;
+        localStorage.setItem('user', JSON.stringify(user)); // Lưu vào Local Storage
+      }
     },
     brands(state: RootState, brands: any ) {
       state.brands = brands;
@@ -41,7 +44,7 @@ export const store = createStore({
 
   actions: {
     userAction(context: ActionContext<RootState, RootState>, user: any) {
-      context.commit('user', user);
+      context.commit('setUser', user);
     },
     brandsAction(context: ActionContext<RootState, RootState>, brands: any) {
       context.commit('brands', brands);
@@ -58,8 +61,9 @@ export const store = createStore({
   },
 
   getters: {
-    user(state: RootState): null {
-      return state.user;
+    user(state: RootState): any {
+      const user = state.user || JSON.parse(localStorage.getItem('user') || 'null'); // Lấy từ Vuex hoặc Local Storage
+      return user;
     },
     brands(state: RootState): null {
       return state.brands;
