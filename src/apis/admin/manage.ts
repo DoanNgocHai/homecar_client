@@ -31,7 +31,12 @@ export const deleteCar = async (idCar: any): Promise<any> => {
   return data;
 };
 
-export const adminVerify = async (idCar: any): Promise<any> => {
-    const { data } = await instance.post("/admin/verify/" + idCar,{}, headers);
-    return data;
+export const adminGetVerify = async (idCar: number) => {
+  const { data } = await instance.get(`/admin/car/${idCar}/verify`, headers);
+  return data;
+};
+
+export const adminVerify = async (idCar: any, form: any): Promise<any> => {
+  const { data } = await instance.post("/admin/verify/" + idCar, form, headers);
+  return data;
 };
