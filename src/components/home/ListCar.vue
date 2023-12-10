@@ -201,7 +201,7 @@ import { useToast } from "vue-toastification";
 import { getBrands, getColors, getFigures, getGears } from '../../apis/taxonomy';
 import { listCar } from '../../apis/user/car';
 import { SaveFavoritesDto, deleteCarFavorites, saveCarFavorites } from '../../apis/user/favorites';
-import debounce from 'lodash.debounce'
+import { useRoute } from "vue-router";
 
 export default {
   data() {
@@ -230,11 +230,23 @@ export default {
     };
   },
   setup() {
+    const route = useRoute();
+
     return {
+      route,
     }
   },
   created(){
     this.getTaxonomyData();
+
+    if (this.route.query.q) {
+      this.q = this.route.query.q as string;
+    }
+
+    if (this.route.query.brand_id) {
+      this.selectedBrandId = this.route.query.brand_id as string;
+    }
+
     this.getData();
     // this.getFavorites();
     this.$store.commit('initFavoriteCars');
@@ -254,6 +266,7 @@ export default {
       this.getData()
     },
     q() {
+      console.log('q = ', this.q)
       this.getData()
     }
   },
