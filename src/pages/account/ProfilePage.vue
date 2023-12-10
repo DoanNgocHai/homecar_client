@@ -20,7 +20,7 @@
               <v-avatar size="120" @click="onAvatarClick">
                 <img
                   v-if="!image && !profile.avatar"
-                  src="../../../public/images/car-bg.png"
+                  src="../../../public/images/avatarDF.png"
                 />
                 <img v-else-if="image" :src="image" />
                 <img v-else :src="path + profile.avatar" />
@@ -117,22 +117,15 @@
                 </v-menu> -->
               </v-col>
               <v-col cols="12" md="6">
-                <label>Citizen Identity</label>
-                <v-text-field
-                  dense
-                  variant="outlined"
-                  v-model="profile.citizen_identity"
-                  label="citizen_identity"
-                  required
-                ></v-text-field>
-              </v-col>
-
-              <v-col cols="12" md="12">
                 <label class="font-weight-medium">Password</label>
                 <v-text-field
                   dense
                   v-model="profile.password"
-                  label="Password"
+                  :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
+                  :type="visible ? 'text' : 'password'"
+                  placeholder="Enter your password"
+                  prepend-inner-icon="mdi-lock-outline"
+                  @click:append-inner="visible = !visible"
                   variant="outlined"
                 ></v-text-field>
               </v-col>
@@ -151,7 +144,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { useStore,mapGetters } from 'vuex';
 import { getProfile, updateProfile } from '../../apis/profile/profile';
 import { useToast } from "vue-toastification";
 import { uploadFile } from '../../apis/common/upload-file'
@@ -161,6 +154,7 @@ export default {
   components: { VueDatePicker },
   data() {
     const toast = useToast();
+    const store = useStore();
     return {
       menu: false,
       date: "",
@@ -201,7 +195,9 @@ export default {
         v => !!v || 'Citizen Identity is required',
         v => (v && v.length <= 12 ) || 'Citizen Identity must be less than 12 characters',
       ],
+      visible: false,
       toast,
+      store,
       loading: false,
       formattedDateOfBirth: ''
     };
@@ -242,7 +238,7 @@ export default {
       try {
         const response = await getProfile();
         this.profile = response;
-        console.log(response);
+        this.store.dispatch('userAction', response);
       } catch (error) {
         console.error('Error fetching brands:', error);
       }
@@ -250,25 +246,34 @@ export default {
     async Update() {
       this.loading = true;
       let param = { "image": this.avatar[0] };
-      const data = await uploadFile(param);
-      // if (this.profile.password != "") {
-      //     this.profile.password = this.password;
-      // } else {
-      //     this.profile.password = "";
-      // }
-      const dataRs = {
-        name: this.profile.name,
-        // citizen_identity: this.profile.citizen_identity,
-        // email: this.profile.email,
-        date_of_birth: this.formattedDateOfBirth,
-        phone: this.profile.phone,
-        address: this.profile.address,
-        avatar: data.path,
-        // password: this.profile.password,
-      };
+      let dataRs = '';
+      let password = this.profile.password;
+      if (password == null) {
+        password = null
+      }
+      if (param.image) {
+        const data = await uploadFile(param);
+        dataRs = {
+          name: this.profile.name,
+          date_of_birth: this.formattedDateOfBirth,
+          phone: this.profile.phone,
+          address: this.profile.address,
+          avatar: data.path,
+          password: password,
+        };
+      } else {
+        dataRs = {
+          name: this.profile.name,
+          date_of_birth: this.formattedDateOfBirth,
+          phone: this.profile.phone,
+          address: this.profile.address,
+          password: password,
+        };
+      }
       console.log(dataRs);
       try {
         const data = await updateProfile(dataRs);
+        this.userProfile();
         if (data) {
           this.toast.success("Cập nhật hồ sơ thành công!!");
         }

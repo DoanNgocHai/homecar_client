@@ -1,4 +1,4 @@
-import axios, { AxiosRequestConfig } from "axios";
+import axios from "axios";
 
 const AUTHENTICATED_KEY = "access_token";
 
@@ -16,14 +16,10 @@ export const instanceUpload = axios.create({
   },
 });
 
-export const getHeader = (): AxiosRequestConfig => {
+export const getHeader = () => {
   let token = localStorage.getItem(AUTHENTICATED_KEY);
 
-  if (token == null) {
-    localStorage.clear();
-  }
-
-  const headers: AxiosRequestConfig = {
+  const headers = {
     headers: {
       Authorization: `Bearer ${token}`,
     },

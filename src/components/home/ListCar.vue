@@ -50,24 +50,11 @@
                   <span class="content-style">{{ item.title }}</span>
                 </v-col>
                 <v-col cols="2">
-                  <!-- <span class="me-1">
-                    <v-icon
-                      @click="saveFavorites(item.id)"
-                      color="#000000"
-                      icon="mdi-heart-outline"
-                      size="large"
-                    >
-                    </v-icon>
-                    <v-tooltip
-                      activator="parent"
-                      location="bottom"
-                    >Lưu vào xe yêu thích của bạn</v-tooltip>
-                  </span> -->
                   <span class="me-1">
                     <v-icon
-                      @click="toggleFavorite(item.id)"
-                      :color="isFavorite(item.id) ? 'red' : '#000000'"
-                      :icon="isFavorite(item.id) ? 'mdi-heart' : 'mdi-heart-outline'"
+                      @click="toggleFavorite(item)"
+                      :color="isFavorite(item) ? 'red' : '#000000'"
+                      :icon="isFavorite(item) ? 'mdi-heart' : 'mdi-heart-outline'"
                       size="large"
                     >
                     </v-icon>
@@ -197,7 +184,8 @@ export default {
   },
   created(){
     this.getData();
-    this.getFavorites();
+    // this.getFavorites();
+    this.$store.commit('initFavoriteCars');
   },
   methods: {
     async getData() {
@@ -238,63 +226,30 @@ export default {
         return number;
       }
     },
-    async getFavorites() {
-      const data = await listCarFavorites();
-      if (data) {
-        this.favoriteVehicles = data;
-        console.log('yeu thich');
-      }
+    isFavorite(car:any) {
+      return this.$store.state.favoriteCars.includes(car.id);
     },
-    async saveFavorites(carId:any){
-      const saveFavoritesDto: SaveFavoritesDto = {
-        car_id: carId || '',
-      };
+    async toggleFavorite(car:any) {
       try {
-        const data = await saveCarFavorites(saveFavoritesDto);
-        if (data) {
-          this.toast.success("Đã thêm vào xe yêu thích!!");
+        if (this.isFavorite(car)) {
+          await deleteCarFavorites(car.id); 
+          console.log(car.id);
+          
+          this.$store.commit('removeFavoriteCar', car.id);
+          this.toast.success("Đã Xóa!!");
+
+        } else {
+          const saveFavoritesDto: SaveFavoritesDto = {
+            car_id: car.id || '',
+          };
+          await saveCarFavorites(saveFavoritesDto);
+          this.$store.commit('addFavoriteCar', car.id);
+          this.toast.success("Đã Thêm vào xe yêu thích!!");
         }
       } catch (error) {
-        this.toast.warning("Xe này đã được thêm vào trước đó!!");
+        console.error('Lỗi khi gọi API', error);
       }
-      
-    },
-    isFavorite(vehicleId:any) {
-      return this.data.includes(vehicleId);
-    },
-    async toggleFavorite(vehicleId: any) {
-      const index = this.data.indexOf(vehicleId);
-      const saveFavoritesDto: SaveFavoritesDto = {
-        car_id: vehicleId || '',
-      };
-      if (index === -1) {
-        try {
-          // Gọi API để thêm vào danh sách yêu thích
-          const data = await saveCarFavorites(saveFavoritesDto);
-          if (data) {
-            this.toast.success("Đã Thêm vào xe yêu thích!!");
-          }
-          this.getFavorites();
-          this.id_fav = data.id
-          this.data.push(vehicleId);
-          console.log(this.id_fav);
-
-        } catch (error) {
-          this.toast.error("lỗi");
-          console.error('Có lỗi khi thêm vào yêu thích', error);
-        }
-      } else {
-        try {
-          const data = await deleteCarFavorites(this.id_fav);
-          this.data.splice(index, 1);
-          if (data) {
-            this.toast.success("Đã Xóa!!");
-          }
-        } catch (error) {
-          this.toast.warning("lỗi");
-        }
-      }
-    },
+    }
   }
 }
 </script>

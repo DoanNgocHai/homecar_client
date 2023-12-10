@@ -17,15 +17,19 @@ export const store = createStore({
     figures: null,
     gears: null,
     colors: null,
+    favoriteCars: [],
   } as RootState, 
 
   modules: {},
 
   mutations: {
     setUser(state: RootState, user: any) {
-      if (user !== null) {
+      if (user !== 'null') {
         state.user = user;
         localStorage.setItem('user', JSON.stringify(user)); // Lưu vào Local Storage
+      }
+      else {
+        state.user = user;
       }
     },
     brands(state: RootState, brands: any ) {
@@ -40,6 +44,22 @@ export const store = createStore({
     colors(state: RootState, colors: any ) {
       state.colors = colors;
     },
+    addFavoriteCar(state: any, carId: any) {
+      state.favoriteCars.push(carId);
+      localStorage.setItem('favoriteCars', JSON.stringify(state.favoriteCars));
+    },
+    removeFavoriteCar(state: any, carId: any) {
+      const index = state.favoriteCars.indexOf(carId);
+      if (index !== -1) {
+        state.favoriteCars.splice(index, 1);
+        localStorage.setItem('favoriteCars', JSON.stringify(state.favoriteCars));
+      }
+    },
+      // Khởi tạo trạng thái từ Local Storage khi ứng dụng load
+    initFavoriteCars(state) {
+      const storedFvaoriteCars = localStorage.getItem('favoriteCars');
+      state.favoriteCars = storedFvaoriteCars ? JSON.parse(storedFvaoriteCars) : [];
+    }
   },
 
   actions: {

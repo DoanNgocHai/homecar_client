@@ -44,7 +44,7 @@
       </ul>
       <div class="divider"></div>
 
-      <ul v-show="user.user.role == 'admin'" class="menu bg-base-200 w-full rounded-box">
+      <ul v-show="user.role == 'admin'" class="menu bg-base-200 w-full rounded-box">
         <li class="menu-title">Quản lý</li>
         <li>
           <router-link to="/account/admin/dashboard">

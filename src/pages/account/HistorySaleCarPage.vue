@@ -67,6 +67,12 @@
           ></v-chip>
         </div>
       </template>
+      <template v-slot:item.status="{ item }">
+        <div>
+          <v-chip :color="getChipColorTran(item.status)" :text="getChipTextTran(item.status)" class="text-uppercase" label
+            size="small"></v-chip>
+        </div>
+      </template>
       <template v-slot:[`item.actions`]="{ item } " >
         <v-icon
           small
@@ -403,13 +409,14 @@ import { uploadFile } from '../../apis/common/upload-file'
           const data = await deleteCar(this.idCar);
           if (data) {
             this.getData();
-            this.dialogDelete = false
             this.toast.success("Xoá thành công");
             
           }
         } catch (error) {
-          this.toast.success("Xoá dữ liệu thất bại");
+          this.toast.error("Xóa thất bại!! Xe đang có giao dịch!!");
         }
+        this.dialogDelete = false
+
       },
       deleteItem (id) {
         this.idCar = id
@@ -422,7 +429,32 @@ import { uploadFile } from '../../apis/common/upload-file'
       closeDelete () {
         this.dialogDelete = false
       },
-
+      getChipColorTran(status) {
+        if (status === 2) {
+          return 'grey';
+        } else if (status === 3) {
+          return 'green';
+        } else if (status === 4) {
+          return 'red';
+        } else {
+          return 'grey';
+        }
+      },
+      getChipTextTran(status) {
+        if (status === 1) {
+          return 'Đợi Confirm';
+        }
+        else if (status === 2) {
+          return 'Đang giao dịch';
+        }
+        else if (status === 3) {
+          return 'Giao dịch hoàn tất';
+        } else if (status === 4) {
+          return 'Đã hủy giao dịch';
+        } else {
+          return 'Tạo mới';
+        }
+      },  
     },
     computed: {
       ...mapGetters(['brands','figures','gears','colors']),

@@ -338,7 +338,6 @@ export default defineComponent({
 
       try {
         const data = await userSaleCar(createCarDto);
-
         if (data) {
           this.router.push('/account/history-sale-car');
           this.toast.success("Thêm mới xe thành công, vui lòng đợi xét duyệt!!");

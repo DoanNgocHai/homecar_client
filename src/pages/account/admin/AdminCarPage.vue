@@ -70,6 +70,12 @@
           ></v-chip>
         </div>
       </template>
+      <template v-slot:item.status="{ item }">
+        <div>
+          <v-chip :color="getChipColorTran(item.status)" :text="getChipTextTran(item.status)" class="text-uppercase" label
+            size="small"></v-chip>
+        </div>
+      </template>
       <template v-slot:[`item.actions`]="{ item } " >
         <v-icon
           small
@@ -81,7 +87,7 @@
         </v-icon>
         <v-icon
           small
-          @click="deleteItem(item.id)"
+          @click="dialogDelete(item.id)"
         >
           mdi-delete
         </v-icon>
@@ -89,8 +95,8 @@
       </template>    
     </v-data-table>
   </v-card>
-  <v-dialog width="500" v-model="dialogVerifyCar" >
-    <v-card title="Verify Car">
+  <v-dialog width="1500" v-model="dialogVerifyCar" >
+    <!-- <v-card title="Verify Car">
       <v-card-text>
         Bạn muốn đăng xe này lên hệ thống
       </v-card-text>
@@ -111,9 +117,66 @@
             Xác nhận đăng
           </v-btn>
         </v-card-actions>
+    </v-card> -->
+    <v-card title="Verify Car" >
+      <div class="pa-10">
+        <div class="d-flex mb-1">
+          <div class="form-control w-full mb-2 pr-5">
+            <label class="label">
+              <span class="label-text">Thân vỏ</span>
+            </label>
+            <v-text-field type="number" :rules="numberRules" v-model="form.body_condition" label="Nhập điểm số thân vỏ" variant="outlined"></v-text-field>
+          </div>
+          <div class="form-control w-full mb-2 ">
+            <label class="label">
+              <span class="label-text">Khung gầm</span>
+            </label>
+            <v-text-field type="number" :rules="numberRules" v-model="form.chassis_condition" label="Nhập điểm số khung gầm" variant="outlined"></v-text-field>
+          </div>
+ 
+        </div>
+        
+        <div class="d-flex mb-1">
+          <div class="form-control w-full mb-2 pr-5">
+            <label class="label">
+              <span class="label-text">Động cơ </span>
+            </label>
+            <v-text-field type="number" :rules="numberRules" v-model="form.chassis_condition" label="Nhập điểm số động cơ" variant="outlined"></v-text-field>
+          </div> 
+          <div class="form-control w-full mb-2 ">
+            <label class="label">
+              <span class="label-text">Nội thất</span>
+            </label>
+            <v-text-field type="number" :rules="numberRules" v-model="form.interior_condition" label="Nhập điểm số nội thất" variant="outlined"></v-text-field>
+          </div> 
+        </div>
+        <div class="d-flex mb-1">
+          <div class="form-control w-full mb-2 pr-5">
+            <label class="label">
+              <span class="label-text">Lái thử</span>
+            </label>
+            <v-text-field type="number" :rules="numberRules" v-model="form.test_drive" label="Nhập điểm số lái thử" variant="outlined"></v-text-field>
+          </div> 
+          <div class="form-control w-full mb-2 ">
+            <label class="label">
+              <span class="label-text">Tổng điểm</span>
+            </label>
+            <v-text-field type="number" :rules="numberRules" v-model="form.score" label="Nhập tổng điểm" variant="outlined"></v-text-field>
+          </div>
+        </div>
+        <div class="form-control w-full mb-2 ">
+          <label class="label">
+            <span class="label-text">Thông tin thêm</span>
+          </label>
+          <v-textarea v-model="form.note" label="Nhập thông tin thêm" variant="outlined"></v-textarea>
+        </div>
+        <div class="form-control w-full mt-2">
+          <button @click.prevent="verifyCar()" class="btn">Verify</button>
+        </div>
+      </div>
     </v-card>
   </v-dialog>
-  <v-dialog width="500" v-model="dialogDelete">
+  <v-dialog width="500" v-model="dialogDeleteCar">
       <v-card title="Cảnh Báo">
         <v-card-text>
           Hãy cân nhắc trước khi Xoá!!
@@ -122,14 +185,14 @@
         <v-card-actions>
           <v-spacer></v-spacer>
 
-          <v-btn color="blue darken-1" text @click="closeDelete">Cancel</v-btn>
-          <v-btn color="blue darken-1" text @click="deleteItemConfirm()">OK</v-btn>
+          <v-btn color="blue darken-1" text @click="dialogDeleteCar = !dialogDeleteCar">Cancel</v-btn>
+          <v-btn color="blue darken-1" text @click="deleteItemConfirm(this.idCar)">OK</v-btn>
         </v-card-actions>
       </v-card>
   </v-dialog>
 </template>
 <script>
-import { listCar, adminVerify } from '../../../apis/admin/manage';
+import { listCar,deleteCar, adminVerify } from '../../../apis/admin/manage';
 import { useToast } from "vue-toastification";
 import { useStore,mapGetters } from 'vuex';
 import { updateCar } from '../../../apis/user/car';
@@ -144,7 +207,7 @@ import { uploadFile } from '../../../apis/common/upload-file'
         data: [],
         search: '',
         dialogVerifyCar: false,
-        dialogDelete: false,
+        dialogDeleteCar: false,
         items: [],
         idCar:'',
         headers: [
@@ -175,6 +238,19 @@ import { uploadFile } from '../../../apis/common/upload-file'
 
           { text: 'Action', value: 'actions', sortable: false },
         ],
+        numberRules: [ 
+            v => !!v || "This field is required",
+            v => ( v && v <= 100 ) || "Max score 100",
+        ],
+        form: {
+          body_condition: '',
+          chassis_condition:'',
+          engine_condition:'',
+          interior_condition:'',
+          test_drive:'',
+          note:'',
+          score:'',
+        }
       }
     },
     watch: {
@@ -187,6 +263,9 @@ import { uploadFile } from '../../../apis/common/upload-file'
         const data = await listCar();
         if (data) {
           this.items = data;
+          this.items.forEach(item => {
+            item.price = this.currencyVND(item.price);
+          });
         }
       },
       async verifyCar() {
@@ -199,6 +278,57 @@ import { uploadFile } from '../../../apis/common/upload-file'
         this.idCar = id;
         this.dialogVerifyCar = !this.dialogVerifyCar;
       },
+      dialogDelete(id) {
+        this.idCar = id;
+        this.dialogDeleteCar = !this.dialogDeleteCar;
+      },
+      async deleteItemConfirm(idCar) {
+        try {
+          const data = await deleteCar(idCar);
+          if (data) {
+            this.getData();
+            this.toast.success("Xoá thành công");
+          }
+        } catch (error) {
+          this.toast.error("Xóa thất bại!! Xe đang có giao dịch!!");
+        }
+        this.dialogDeleteCar = false
+
+      },
+      currencyVND(value) {
+        if (value) {
+          console.log("123");
+          
+          return new Intl.NumberFormat('vi-VN', { style : 'currency', currency : 'VND'}).format(value);
+        }
+        return null;
+      },
+      getChipColorTran(status) {
+        if (status === 2) {
+          return 'grey';
+        } else if (status === 3) {
+          return 'green';
+        } else if (status === 4) {
+          return 'red';
+        } else {
+          return 'grey';
+        }
+      },
+      getChipTextTran(status) {
+        if (status === 1) {
+          return 'Đợi Confirm';
+        }
+        else if (status === 2) {
+          return 'Đang giao dịch';
+        }
+        else if (status === 3) {
+          return 'Giao dịch hoàn tất';
+        } else if (status === 4) {
+          return 'Đã hủy giao dịch';
+        } else {
+          return 'Tạo mới';
+        }
+      },  
     },
     computed: {
     },

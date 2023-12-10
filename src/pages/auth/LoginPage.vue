@@ -40,7 +40,7 @@ import { object, string } from "yup";
 import { login } from '../../apis/auth';
 import { setToken } from '../../utils/token';
 import { useToast } from "vue-toastification";
-import { useStore, mapState } from 'vuex';
+import { useStore, mapState, mapMutations } from 'vuex';
 
 export default {
   name: 'LoginPage',
@@ -82,14 +82,12 @@ export default {
       this.loading = true;
       const { email, password } = this.form;
       try {
-        const data = await login({ email, password });
+        const data = await login({ email, password });        
         if (data) {
           setToken(data.access_token);
-          this.store.dispatch('userAction', data);
-          this.router.push('/');
-          this.toast.success("Đăng nhập thành công");
-          console.log(data);
-          
+          this.store.dispatch('userAction', data.user);
+          localStorage.setItem('isLogin', 'true');
+          window.location.href = '/';
         }
       } catch (error) {
         this.toast.error("Đăng nhập thất bại, vui lòng kiểm tra lại thông tin đăng nhập.");
@@ -99,6 +97,7 @@ export default {
   },
   computed: {
     ...mapState(['user']),
+    ...mapMutations(['setLogin'])
   },
 }
 </script>

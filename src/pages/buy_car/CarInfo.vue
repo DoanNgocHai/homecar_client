@@ -40,7 +40,7 @@
             </div>
             <div class="car-price">
               <p>Giá niêm yết:</p>
-              <v-card-title><h2 class="title-size">{{ data.price }}<span class="6">₫</span> <span class="font-size">Chỉ từ 2.9 triệu/tháng</span></h2></v-card-title>
+              <v-card-title><h2 class="title-size">{{ currencyVND(data.price) }}<span class="font-size"> Chỉ từ 2.9 triệu/tháng</span></h2></v-card-title>
             </div>
 
             <div class="box-action">
@@ -334,11 +334,9 @@
 <script lang="ts">
 import { useToast } from 'vue-toastification';
 import { buyCarByCarId, getCarInfo } from '../../apis/user/car.js';
-
 export default {
   setup() {
     const toast = useToast();
-
     return {
       toast,
     }
@@ -377,6 +375,7 @@ export default {
   mounted() {
     
   },
+
   created(){
     this.getData();
   },
@@ -394,11 +393,6 @@ export default {
       setTimeout(() => (this.loading = false), 2000)
     },
 
-    convertNumtoPrice(number: any) {
-      console.log(number?.slice(0, -6));
-      return number?.slice(0, 2);
-    },
-
     async buyCar() {
       const carId = this.$route.params.carId as string;
       const res = await buyCarByCarId(parseInt(carId));
@@ -406,6 +400,15 @@ export default {
         this.toast.success("Gửi yêu cầu mua xe thành công");
       }
     },
+    currencyVND(value: any) {
+      if (value) {
+        console.log("123");
+        
+        return new Intl.NumberFormat('vi-VN', { style : 'currency', currency : 'VND'}).format(value);
+      }
+      return null
+    }
+
 
   },
   computed: {
