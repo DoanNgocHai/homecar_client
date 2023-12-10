@@ -1,8 +1,45 @@
 <template>
-    <div>
+    <div class="list-cars">
       <v-row class="px-8">
-        <v-col cols="12" class="py-10 pt-10">
-          <v-card-title><h1 class="title-size"><span></span>Khám phá xe yêu thích</h1></v-card-title>
+        <v-col cols="12" class="pt-10">
+          <v-card-title><h1 class="title-size"><span></span>Danh sách xe đang bán</h1></v-card-title>
+        </v-col>
+        <v-col cols="12" class="pb-0">
+          <input v-model="q" type="text" placeholder="Nhập tên xe" class="input-search input w-full" />
+        </v-col>
+        <v-col cols="12" class="pb-10">
+          <div class="dropdown mr-4">
+            <div tabindex="0" role="button" class="btn">Hãng xe</div>
+            <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+              <li v-for="(item, index) in brands" :key="index" @click="onSelectBrand(item.id)">
+                <a :class="{ active: item.id == selectedBrandId }">{{ item.name }}</a>
+              </li>
+            </ul>
+          </div>
+          <div class="dropdown mr-4">
+            <div tabindex="0" role="button" class="btn">Kiểu dáng</div>
+            <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+              <li v-for="(item, index) in figures" :key="index" @click="onSelectFigure(item.id)">
+                <a :class="{ active: item.id == selectedFigureId }">{{ item.name }}</a>
+              </li>
+            </ul>
+          </div>
+          <div class="dropdown mr-4">
+            <div tabindex="0" role="button" class="btn">Hộp số</div>
+            <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+              <li v-for="(item, index) in gears" :key="index" @click="onSelectGear(item.id)">
+                <a :class="{ active: item.id == selectedGearId }">{{ item.name }}</a>
+              </li>
+            </ul>
+          </div>
+          <div class="dropdown mr-4">
+            <div tabindex="0" role="button" class="btn">Màu sắc</div>
+            <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+              <li v-for="(item, index) in colors" :key="index" @click="onSelectColor(item.id)">
+                <a :class="{ active: item.id == selectedColorId }">{{ item.name }}</a>
+              </li>
+            </ul>
+          </div>
         </v-col>
         <v-col class="py" cols="4" v-for="(item, index) in data" :key="index">
           <v-card
@@ -160,9 +197,12 @@
 </template>
 
 <script lang="ts">
-import { listCar } from '../../apis/user/car';
-import { saveCarFavorites, SaveFavoritesDto,listCarFavorites, deleteCarFavorites } from '../../apis/user/favorites';
 import { useToast } from "vue-toastification";
+import { getBrands, getColors, getFigures, getGears } from '../../apis/taxonomy';
+import { listCar } from '../../apis/user/car';
+import { SaveFavoritesDto, deleteCarFavorites, saveCarFavorites } from '../../apis/user/favorites';
+import debounce from 'lodash.debounce'
+
 export default {
   data() {
     const toast = useToast();
@@ -176,6 +216,17 @@ export default {
       isLastPage: false,
       toast,
       id_fav: '',
+      brands: [],
+      figures: [],
+      gears: [],
+      colors: [],
+
+      q: '',
+
+      selectedBrandId: '',
+      selectedFigureId: '',
+      selectedGearId: '',
+      selectedColorId: '',
     };
   },
   setup() {
@@ -183,13 +234,70 @@ export default {
     }
   },
   created(){
+    this.getTaxonomyData();
     this.getData();
     // this.getFavorites();
     this.$store.commit('initFavoriteCars');
   },
+
+  watch: {
+    selectedBrandId() {
+      this.getData()
+    },
+    selectedFigureId() {
+      this.getData()
+    },
+    selectedGearId() {
+      this.getData()
+    },
+    selectedColorId() {
+      this.getData()
+    },
+    q() {
+      this.getData()
+    }
+  },
+
   methods: {
+    async getTaxonomyData() {
+      const brands = await getBrands();
+      this.brands = brands.data;
+
+      const figures = await getFigures();
+      this.figures = figures.data;
+
+      const gears = await getGears();
+      this.gears = gears.data;
+
+      const colors = await getColors();
+      this.colors = colors.data;
+    },
+
+    async onSelectBrand(brandId: number) {
+      this.selectedBrandId = `${brandId}`
+    },
+
+    async onSelectFigure(figureId: number) {
+      this.selectedFigureId = `${figureId}`
+    },
+
+    async onSelectGear(gearId: number) {
+      this.selectedGearId = `${gearId}`
+    },
+
+    async onSelectColor(colorId: number) {
+      this.selectedColorId = `${colorId}`
+    },
+
     async getData() {
-      const data = await listCar();
+      const data = await listCar(
+        this.perPage,
+        this.q,
+        this.selectedBrandId,
+        this.selectedFigureId,
+        this.selectedGearId,
+        this.selectedColorId,
+      );
       if (data) {
         this.isLastPage = this.perPage < data.last_page;
         this.data = data?.data;
@@ -207,7 +315,6 @@ export default {
     },
     reserve () {
       this.loading = true
-
       setTimeout(() => (this.loading = false), 2000)
     },
     getCarInfo(id:string) {
@@ -250,11 +357,19 @@ export default {
         console.error('Lỗi khi gọi API', error);
       }
     }
-  }
+  },
 }
 </script>
 
 <style lang="scss" scoped>
+.list-cars {
+  .v-card-title {
+    border-bottom: 1px solid #e3e3e3;
+  }
+  .input-search {
+    border: 1px solid gray;
+  }
+}
 .font-size {
   font-size: .875rem;
   color: #2e54a5;
