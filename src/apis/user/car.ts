@@ -42,12 +42,39 @@ export const userSaleCar = async (
   return data as CreateCarResponse;
 };
 
-export const listCar = async (page: number = 1): Promise<any> => {
-  if (page != 1) {
-    const { data } = await instance.get("/anonymous/list_cars?page="+page);
-    return data;
+export const listCar = async (
+  page: number = 1,
+  q: string = "",
+  brand_id: string = "",
+  figure_id: string = "",
+  gear_id: string = "",
+  color_id: string = ""
+): Promise<any> => {
+  let url = "/anonymous/list_cars?";
+
+  url += `page=${page}`;
+
+  if (q !== "") {
+    url += `&q=${q}`;
   }
-  const { data } = await instance.get("/anonymous/list_cars");
+
+  if (brand_id !== "") {
+    url += `&brand_id=${brand_id}`;
+  }
+
+  if (figure_id !== "") {
+    url += `&figure_id=${figure_id}`;
+  }
+
+  if (gear_id !== "") {
+    url += `&gear_id=${gear_id}`;
+  }
+
+  if (color_id !== "") {
+    url += `&color_id=${color_id}`;
+  }
+
+  const { data } = await instance.get(url);
   return data;
 };
 

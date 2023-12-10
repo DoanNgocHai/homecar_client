@@ -52,7 +52,7 @@
         >
 
           <v-img
-            :src="`http://127.0.0.1:8000${item.thumbnail}`"
+            :src="`http://127.0.0.1:81${item.thumbnail}`"
             height="65"
             width="100"
           ></v-img>
@@ -133,15 +133,14 @@
             </label>
             <v-text-field type="number" :rules="numberRules" v-model="form.chassis_condition" label="Nhập điểm số khung gầm" variant="outlined"></v-text-field>
           </div>
- 
         </div>
         
         <div class="d-flex mb-1">
           <div class="form-control w-full mb-2 pr-5">
             <label class="label">
-              <span class="label-text">Động cơ </span>
+              <span class="label-text">Động cơ</span>
             </label>
-            <v-text-field type="number" :rules="numberRules" v-model="form.chassis_condition" label="Nhập điểm số động cơ" variant="outlined"></v-text-field>
+            <v-text-field type="number" :rules="numberRules" v-model="form.engine_condition" label="Nhập điểm số động cơ" variant="outlined"></v-text-field>
           </div> 
           <div class="form-control w-full mb-2 ">
             <label class="label">
@@ -191,12 +190,9 @@
       </v-card>
   </v-dialog>
 </template>
-<script>
-import { listCar,deleteCar, adminVerify } from '../../../apis/admin/manage';
+<script lang="ts">
 import { useToast } from "vue-toastification";
-import { useStore,mapGetters } from 'vuex';
-import { updateCar } from '../../../apis/user/car';
-import { uploadFile } from '../../../apis/common/upload-file'
+import { adminVerify, adminGetVerify, deleteCar, listCar } from '../../../apis/admin/manage';
   export default {
     data () {
       const toast = useToast();
@@ -268,20 +264,59 @@ import { uploadFile } from '../../../apis/common/upload-file'
           });
         }
       },
+
       async verifyCar() {
-        const data = await adminVerify(this.idCar);
+        const res = await adminVerify(this.idCar, this.form);
+        if (res) {
+          console.log(res)
+        }
         this.toast.success("Verify thành công");
         this.dialogVerifyCar = !this.dialogVerifyCar;
         this.getData();
       },
-      dialogVerify(id) {
+
+      async dialogVerify(id) {
         this.idCar = id;
         this.dialogVerifyCar = !this.dialogVerifyCar;
+
+        const res = await adminGetVerify(parseInt(this.idCar));
+        if (res) {
+          const {
+            body_condition,
+            chassis_condition,
+            engine_condition,
+            interior_condition,
+            test_drive,
+            note,
+            score,
+          } = res
+          this.form = {
+            body_condition,
+            chassis_condition,
+            engine_condition,
+            interior_condition,
+            test_drive,
+            note,
+            score,
+          };
+        } else {
+          this.form = {
+            body_condition: '',
+            chassis_condition:'',
+            engine_condition:'',
+            interior_condition:'',
+            test_drive:'',
+            note:'',
+            score:'',
+          }
+        }
       },
+
       dialogDelete(id) {
         this.idCar = id;
         this.dialogDeleteCar = !this.dialogDeleteCar;
       },
+
       async deleteItemConfirm(idCar) {
         try {
           const data = await deleteCar(idCar);
@@ -295,6 +330,7 @@ import { uploadFile } from '../../../apis/common/upload-file'
         this.dialogDeleteCar = false
 
       },
+
       currencyVND(value) {
         if (value) {
           console.log("123");
@@ -303,6 +339,7 @@ import { uploadFile } from '../../../apis/common/upload-file'
         }
         return null;
       },
+
       getChipColorTran(status) {
         if (status === 2) {
           return 'grey';
@@ -314,6 +351,7 @@ import { uploadFile } from '../../../apis/common/upload-file'
           return 'grey';
         }
       },
+
       getChipTextTran(status) {
         if (status === 1) {
           return 'Đợi Confirm';

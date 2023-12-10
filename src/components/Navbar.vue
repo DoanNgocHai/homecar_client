@@ -9,7 +9,7 @@
       <div class="menu-header whitespace-nowrap text-neutral">
         <ul class="flex">
           <li><router-link to="/">Trang chủ</router-link></li>
-          <li><router-link to="/">Mua xe</router-link></li>
+          <li><router-link to="/list-car">Mua xe</router-link></li>
           <li><router-link to="/sale-car">Bán xe</router-link></li>
           <li><router-link to="/sale-car">Dịch vụ</router-link></li>
           <li><router-link to="/sale-car">Giới thiệu</router-link></li>
@@ -76,11 +76,9 @@
     </div>
   </div>
 </template>
-<script>
-// import { getHeader } from "../apis/instance";
-import { mapGetters, mapState, useStore } from 'vuex';
-import { logout } from '../apis/auth';
+<script lang="ts">
 import { useToast } from "vue-toastification";
+import { mapGetters, useStore } from 'vuex';
 
 export default {
   data() {
